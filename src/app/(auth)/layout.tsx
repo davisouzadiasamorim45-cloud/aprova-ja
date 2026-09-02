@@ -1,16 +1,17 @@
 import Link from "next/link";
+import { Logo } from "@/components/ui/logo";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
-      <div className="w-full max-w-sm">
+    <div className="flex min-h-screen items-center justify-center bg-background bg-grain px-4 py-10">
+      <div className="w-full max-w-sm animate-fade-up">
         <div className="mb-8 text-center">
-          <Link href="/" className="text-xl font-bold text-slate-900">
-            Aprova<span className="text-indigo-600">Já</span>
+          <Link href="/" className="inline-flex">
+            <Logo />
           </Link>
-          <p className="mt-1 text-sm text-slate-500">Sua preparação para concursos, organizada.</p>
+          <p className="mt-2 text-sm text-ink-500">Sua preparação para concursos, organizada.</p>
         </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">{children}</div>
+        <div className="rounded-2xl border border-ink-200/70 bg-white p-7 shadow-soft-lg">{children}</div>
       </div>
     </div>
   );

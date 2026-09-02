@@ -11,8 +11,8 @@ export default async function QuestoesPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-slate-900">Banco de questões</h1>
-      <p className="mt-1 text-sm text-slate-500">
+      <h1 className="font-display text-2xl font-semibold text-ink-900">Banco de questões</h1>
+      <p className="mt-1 text-sm text-ink-500">
         Filtre por concurso e matéria, responda e acompanhe seu desempenho em tempo real.
       </p>
 

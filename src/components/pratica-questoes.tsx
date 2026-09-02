@@ -1,7 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Check, PartyPopper, RotateCcw, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { cn } from "@/lib/cn";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Label, Select } from "@/components/ui/field";
+import { Badge } from "@/components/ui/badge";
 
 type Concurso = { id: string; nome: string };
 type Materia = { id: string; nome: string };
@@ -16,6 +22,12 @@ type Questao = {
   explicacao: string | null;
   alternativas: Alternativa[];
 };
+
+const DIFICULDADE_TONE = {
+  facil: "success",
+  media: "gold",
+  dificil: "danger",
+} as const;
 
 function shuffle<T>(arr: T[]): T[] {
   const copy = [...arr];
@@ -115,120 +127,115 @@ export function PraticaQuestoes({ concursos }: { concursos: Concurso[] }) {
 
   if (!iniciou) {
     return (
-      <div className="rounded-2xl border border-slate-200 bg-white p-6">
+      <Card className="p-6">
         <div className="grid gap-4 sm:grid-cols-3">
           <div>
-            <label className="text-sm font-medium text-slate-700">Concurso</label>
-            <select
-              value={concursoId}
-              onChange={(e) => selecionarConcurso(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
-            >
+            <Label>Concurso</Label>
+            <Select value={concursoId} onChange={(e) => selecionarConcurso(e.target.value)}>
               <option value="">Todos</option>
               {concursos.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.nome}
                 </option>
               ))}
-            </select>
+            </Select>
           </div>
 
           <div>
-            <label className="text-sm font-medium text-slate-700">Matéria</label>
-            <select
-              value={materiaId}
-              onChange={(e) => setMateriaId(e.target.value)}
-              disabled={!concursoId}
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm disabled:bg-slate-50"
-            >
+            <Label>Matéria</Label>
+            <Select value={materiaId} onChange={(e) => setMateriaId(e.target.value)} disabled={!concursoId}>
               <option value="">Todas</option>
               {materias.map((m) => (
                 <option key={m.id} value={m.id}>
                   {m.nome}
                 </option>
               ))}
-            </select>
+            </Select>
           </div>
 
           <div>
-            <label className="text-sm font-medium text-slate-700">Dificuldade</label>
-            <select
-              value={dificuldade}
-              onChange={(e) => setDificuldade(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
-            >
+            <Label>Dificuldade</Label>
+            <Select value={dificuldade} onChange={(e) => setDificuldade(e.target.value)}>
               <option value="">Todas</option>
               <option value="facil">Fácil</option>
               <option value="media">Média</option>
               <option value="dificil">Difícil</option>
-            </select>
+            </Select>
           </div>
         </div>
 
-        <button
-          onClick={iniciarSessao}
-          disabled={carregando}
-          className="mt-6 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-60"
-        >
+        <Button onClick={iniciarSessao} disabled={carregando} className="mt-6">
           {carregando ? "Carregando..." : "Começar a praticar"}
-        </button>
-      </div>
+        </Button>
+      </Card>
     );
   }
 
   if (carregando) {
-    return <p className="text-sm text-slate-500">Carregando questões...</p>;
+    return (
+      <Card className="flex items-center gap-3 p-6">
+        <span className="h-4 w-4 animate-spin rounded-full border-2 border-brand-300 border-t-brand-600" />
+        <p className="text-sm text-ink-500">Carregando questões...</p>
+      </Card>
+    );
   }
 
   if (questoes.length === 0) {
     return (
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 text-center">
-        <p className="text-slate-600">Nenhuma questão encontrada para esses filtros.</p>
-        <button onClick={() => setIniciou(false)} className="mt-3 text-sm font-medium text-indigo-600 hover:underline">
+      <Card className="p-8 text-center">
+        <p className="text-ink-600">Nenhuma questão encontrada para esses filtros.</p>
+        <button onClick={() => setIniciou(false)} className="mt-3 text-sm font-medium text-brand-700 hover:underline">
           Ajustar filtros
         </button>
-      </div>
+      </Card>
     );
   }
 
   if (indice >= questoes.length) {
+    const taxa = sessao.total > 0 ? Math.round((sessao.acertos / sessao.total) * 100) : 0;
     return (
-      <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center">
-        <p className="text-lg font-semibold text-slate-900">Sessão concluída! 🎉</p>
-        <p className="mt-2 text-slate-600">
-          Você acertou {sessao.acertos} de {sessao.total} questões (
-          {sessao.total > 0 ? Math.round((sessao.acertos / sessao.total) * 100) : 0}%).
+      <Card className="p-8 text-center">
+        <PartyPopper className="mx-auto h-8 w-8 text-gold-500" strokeWidth={1.75} />
+        <p className="mt-3 font-display text-lg font-semibold text-ink-900">Sessão concluída!</p>
+        <p className="mt-2 text-ink-600">
+          Você acertou {sessao.acertos} de {sessao.total} questões ({taxa}%).
         </p>
-        <button
-          onClick={() => setIniciou(false)}
-          className="mt-4 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700"
-        >
-          Praticar novamente
-        </button>
-      </div>
+        <div className="mx-auto mt-4 h-2 max-w-xs overflow-hidden rounded-full bg-ink-100">
+          <div className="h-full rounded-full bg-brand-500 transition-all" style={{ width: `${taxa}%` }} />
+        </div>
+        <Button onClick={() => setIniciou(false)} className="mt-6 gap-2">
+          <RotateCcw className="h-4 w-4" /> Praticar novamente
+        </Button>
+      </Card>
     );
   }
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-6">
-      <div className="mb-4 flex items-center justify-between text-xs text-slate-500">
-        <span>
+    <Card className="p-6">
+      <div className="mb-4 flex items-center justify-between text-xs text-ink-500">
+        <span className="font-medium">
           Questão {indice + 1} de {questoes.length}
         </span>
         <span>
-          Acertos: {sessao.acertos}/{sessao.total}
+          Acertos: <span className="font-semibold text-ink-700">{sessao.acertos}/{sessao.total}</span>
         </span>
       </div>
-
-      <div className="mb-4 flex flex-wrap gap-2 text-xs">
-        {questaoAtual.banca && (
-          <span className="rounded-full bg-slate-100 px-2.5 py-1 text-slate-600">{questaoAtual.banca}</span>
-        )}
-        {questaoAtual.ano && <span className="rounded-full bg-slate-100 px-2.5 py-1 text-slate-600">{questaoAtual.ano}</span>}
-        <span className="rounded-full bg-indigo-50 px-2.5 py-1 text-indigo-700 capitalize">{questaoAtual.dificuldade}</span>
+      <div className="mb-5 h-1.5 overflow-hidden rounded-full bg-ink-100">
+        <div
+          className="h-full rounded-full bg-brand-500 transition-all duration-300"
+          style={{ width: `${(indice / questoes.length) * 100}%` }}
+        />
       </div>
 
-      <p className="text-base leading-relaxed text-slate-900">{questaoAtual.enunciado}</p>
+      <div className="mb-4 flex flex-wrap gap-2">
+        {questaoAtual.banca && <Badge>{questaoAtual.banca}</Badge>}
+        {questaoAtual.ano && <Badge>{questaoAtual.ano}</Badge>}
+        <Badge tone={DIFICULDADE_TONE[questaoAtual.dificuldade]} className="capitalize">
+          {questaoAtual.dificuldade}
+        </Badge>
+      </div>
+
+      <p className="text-base leading-relaxed text-ink-900">{questaoAtual.enunciado}</p>
 
       <div className="mt-5 flex flex-col gap-2">
         {questaoAtual.alternativas
@@ -243,39 +250,49 @@ export function PraticaQuestoes({ concursos }: { concursos: Concurso[] }) {
                 key={alt.id}
                 onClick={() => responder(alt)}
                 disabled={respondida}
-                className={`flex items-start gap-3 rounded-lg border px-4 py-3 text-left text-sm transition ${
+                className={cn(
+                  "flex items-start gap-3 rounded-xl border px-4 py-3 text-left text-sm transition-colors",
                   showCorrect
-                    ? "border-emerald-500 bg-emerald-50"
+                    ? "border-brand-500 bg-brand-50"
                     : showWrong
-                    ? "border-red-500 bg-red-50"
-                    : isSelected
-                    ? "border-indigo-500 bg-indigo-50"
-                    : "border-slate-200 hover:border-indigo-300 hover:bg-slate-50"
-                } ${respondida ? "cursor-default" : "cursor-pointer"}`}
+                      ? "border-red-400 bg-red-50"
+                      : isSelected
+                        ? "border-brand-400 bg-brand-50"
+                        : "border-ink-200 hover:border-brand-300 hover:bg-ink-50",
+                  respondida ? "cursor-default" : "cursor-pointer"
+                )}
               >
-                <span className="font-semibold text-slate-500">{alt.letra}</span>
-                <span className="text-slate-800">{alt.texto}</span>
+                <span
+                  className={cn(
+                    "flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-semibold",
+                    showCorrect
+                      ? "bg-brand-600 text-white"
+                      : showWrong
+                        ? "bg-red-500 text-white"
+                        : "bg-ink-100 text-ink-500"
+                  )}
+                >
+                  {showCorrect ? <Check className="h-3.5 w-3.5" /> : showWrong ? <X className="h-3.5 w-3.5" /> : alt.letra}
+                </span>
+                <span className="text-ink-800">{alt.texto}</span>
               </button>
             );
           })}
       </div>
 
       {respondida && (
-        <div className="mt-5 rounded-lg bg-slate-50 p-4 text-sm text-slate-700">
+        <div className="mt-5 rounded-xl bg-ink-50 p-4 text-sm text-ink-700">
           {questaoAtual.explicacao && (
             <p>
               <span className="font-semibold">Comentário: </span>
               {questaoAtual.explicacao}
             </p>
           )}
-          <button
-            onClick={proxima}
-            className="mt-3 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700"
-          >
+          <Button onClick={proxima} size="sm" className="mt-3">
             Próxima questão →
-          </button>
+          </Button>
         </div>
       )}
-    </div>
+    </Card>
   );
 }
