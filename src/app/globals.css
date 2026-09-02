@@ -1,18 +1,171 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Fundo levemente amarelado (papel), não branco/cinza frio de template */
+  --background: #faf8f4;
+  --foreground: #211d17;
+
+  /* Marca: verde-floresta (aprovação/confirmação) + dourado (conquista) */
+  --brand-50: #eefaf3;
+  --brand-100: #d6f2e2;
+  --brand-200: #aee3c8;
+  --brand-300: #79cda8;
+  --brand-400: #45b085;
+  --brand-500: #23926c;
+  --brand-600: #157456;
+  --brand-700: #135c46;
+  --brand-800: #12493a;
+  --brand-900: #0f3c30;
+  --brand-950: #082219;
+
+  --gold-50: #fdf8ec;
+  --gold-100: #faedc8;
+  --gold-200: #f5d98d;
+  --gold-300: #efc157;
+  --gold-400: #e7a934;
+  --gold-500: #d18d20;
+  --gold-600: #b06e19;
+  --gold-700: #8c5219;
+  --gold-800: #74421a;
+  --gold-900: #63381a;
+
+  /* Neutros quentes (não cinza-azulado de template) */
+  --ink-50: #faf9f7;
+  --ink-100: #f2efe9;
+  --ink-200: #e5e0d5;
+  --ink-300: #d2cabb;
+  --ink-400: #a89d89;
+  --ink-500: #857a67;
+  --ink-600: #665d4e;
+  --ink-700: #4d453a;
+  --ink-800: #362f28;
+  --ink-900: #211d17;
+  --ink-950: #14110d;
+
+  --shadow-color: 30 25% 15%;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  --color-brand-50: var(--brand-50);
+  --color-brand-100: var(--brand-100);
+  --color-brand-200: var(--brand-200);
+  --color-brand-300: var(--brand-300);
+  --color-brand-400: var(--brand-400);
+  --color-brand-500: var(--brand-500);
+  --color-brand-600: var(--brand-600);
+  --color-brand-700: var(--brand-700);
+  --color-brand-800: var(--brand-800);
+  --color-brand-900: var(--brand-900);
+  --color-brand-950: var(--brand-950);
+
+  --color-gold-50: var(--gold-50);
+  --color-gold-100: var(--gold-100);
+  --color-gold-200: var(--gold-200);
+  --color-gold-300: var(--gold-300);
+  --color-gold-400: var(--gold-400);
+  --color-gold-500: var(--gold-500);
+  --color-gold-600: var(--gold-600);
+  --color-gold-700: var(--gold-700);
+  --color-gold-800: var(--gold-800);
+  --color-gold-900: var(--gold-900);
+
+  --color-ink-50: var(--ink-50);
+  --color-ink-100: var(--ink-100);
+  --color-ink-200: var(--ink-200);
+  --color-ink-300: var(--ink-300);
+  --color-ink-400: var(--ink-400);
+  --color-ink-500: var(--ink-500);
+  --color-ink-600: var(--ink-600);
+  --color-ink-700: var(--ink-700);
+  --color-ink-800: var(--ink-800);
+  --color-ink-900: var(--ink-900);
+  --color-ink-950: var(--ink-950);
+
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-display: var(--font-display), ui-serif, Georgia, serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
+}
+
+::selection {
+  background: var(--brand-200);
+  color: var(--brand-900);
+}
+
+/* Foco visível e consistente em toda a aplicação, sem depender de cada componente lembrar de estilizar. */
+:focus-visible {
+  outline: 2px solid var(--brand-500);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Sombras mais suaves e quentes que o cinza puro padrão do Tailwind. */
+.shadow-soft {
+  box-shadow:
+    0 1px 2px hsl(var(--shadow-color) / 0.04),
+    0 2px 8px hsl(var(--shadow-color) / 0.06);
+}
+.shadow-soft-lg {
+  box-shadow:
+    0 4px 12px hsl(var(--shadow-color) / 0.08),
+    0 12px 32px hsl(var(--shadow-color) / 0.1);
+}
+
+/* Textura sutil de papel para seções de destaque, sem imagens externas. */
+.bg-grain {
+  position: relative;
+}
+.bg-grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image: radial-gradient(circle at 1px 1px, hsl(var(--shadow-color) / 0.06) 1px, transparent 0);
+  background-size: 20px 20px;
+}
+
+/* Cursor piscante com gradiente da marca, ao lado do título do hero
+   (mesma ideia do "typing cursor" do site do Google Antigravity). */
+.gradient-cursor {
+  display: inline-block;
+  width: 0.09em;
+  height: 0.8em;
+  margin-left: 0.08em;
+  vertical-align: -0.05em;
+  border-radius: 999px;
+  background: linear-gradient(180deg, var(--brand-400), var(--gold-400));
+  animation: cursor-blink 1s steps(1) infinite;
+}
+@keyframes cursor-blink {
+  0%, 45% {
+    opacity: 1;
+  }
+  50%, 95% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-up {
+  animation: fade-up 0.4s ease-out both;
 }

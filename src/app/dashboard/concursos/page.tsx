@@ -16,8 +16,8 @@ export default async function ConcursosPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-slate-900">Concursos</h1>
-      <p className="mt-1 text-sm text-slate-500">Escolha um concurso do catálogo ou cadastre um novo para acompanhar.</p>
+      <h1 className="font-display text-2xl font-semibold text-ink-900">Concursos</h1>
+      <p className="mt-1 text-sm text-ink-500">Escolha um concurso do catálogo ou cadastre um novo para acompanhar.</p>
 
       <div className="mt-6">
         <CatalogoConcursos concursos={concursos ?? []} idsSeguidos={idsSeguidos} />

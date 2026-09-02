@@ -1,7 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { CheckCircle2, Landmark, Plus } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { cn } from "@/lib/cn";
+import { Card, CardForm } from "@/components/ui/card";
+import { Button, buttonClass } from "@/components/ui/button";
+import { Input } from "@/components/ui/field";
+import { Badge } from "@/components/ui/badge";
 
 type Concurso = {
   id: string;
@@ -72,69 +78,58 @@ export function CatalogoConcursos({ concursos, idsSeguidos }: { concursos: Concu
 
   return (
     <div>
-      <button
-        onClick={() => setMostrarForm((v) => !v)}
-        className="mb-4 rounded-lg border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
-      >
-        {mostrarForm ? "Cancelar" : "+ Cadastrar novo concurso"}
+      <button onClick={() => setMostrarForm((v) => !v)} className={buttonClass("outline", "md", "mb-4 gap-1.5")}>
+        <Plus className="h-4 w-4" /> {mostrarForm ? "Cancelar" : "Cadastrar novo concurso"}
       </button>
 
       {mostrarForm && (
-        <form onSubmit={cadastrarConcurso} className="mb-6 grid gap-3 rounded-2xl border border-slate-200 bg-white p-5 sm:grid-cols-3">
-          <input
-            value={nome}
-            onChange={(e) => setNome(e.target.value)}
-            placeholder="Nome do concurso"
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm sm:col-span-3"
-          />
-          <input
-            value={orgao}
-            onChange={(e) => setOrgao(e.target.value)}
-            placeholder="Órgão (opcional)"
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
-          />
-          <input
-            value={banca}
-            onChange={(e) => setBanca(e.target.value)}
-            placeholder="Banca (opcional)"
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm"
-          />
-          <button
-            type="submit"
-            disabled={salvando}
-            className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-60"
-          >
+        <CardForm onSubmit={cadastrarConcurso} className="mb-6 grid gap-3 p-5 sm:grid-cols-3">
+          <Input value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Nome do concurso" className="sm:col-span-3" />
+          <Input value={orgao} onChange={(e) => setOrgao(e.target.value)} placeholder="Órgão (opcional)" />
+          <Input value={banca} onChange={(e) => setBanca(e.target.value)} placeholder="Banca (opcional)" />
+          <Button type="submit" disabled={salvando}>
             Salvar
-          </button>
-        </form>
+          </Button>
+        </CardForm>
       )}
 
       <div className="grid gap-3 sm:grid-cols-2">
-        {concursos.map((c) => (
-          <div key={c.id} className="rounded-2xl border border-slate-200 bg-white p-5">
-            <div className="flex items-start justify-between gap-2">
-              <div>
-                <p className="font-semibold text-slate-900">{c.nome}</p>
-                <p className="mt-0.5 text-sm text-slate-500">
-                  {[c.orgao, c.banca, c.ano].filter(Boolean).join(" · ") || "Sem detalhes"}
-                </p>
+        {concursos.map((c) => {
+          const jaSegue = seguindo.has(c.id);
+          return (
+            <Card key={c.id} className="p-5">
+              <div className="flex items-start justify-between gap-2">
+                <div className="flex items-start gap-3">
+                  <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
+                    <Landmark className="h-4.5 w-4.5" strokeWidth={1.9} />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-ink-900">{c.nome}</p>
+                    <p className="mt-0.5 text-sm text-ink-500">{[c.orgao, c.banca, c.ano].filter(Boolean).join(" · ") || "Sem detalhes"}</p>
+                  </div>
+                </div>
+                <Badge className="shrink-0">{STATUS_LABEL[c.status] ?? c.status}</Badge>
               </div>
-              <span className="shrink-0 rounded-full bg-slate-100 px-2.5 py-1 text-xs text-slate-600">
-                {STATUS_LABEL[c.status] ?? c.status}
-              </span>
-            </div>
-            <button
-              onClick={() => seguir(c.id)}
-              disabled={seguindo.has(c.id)}
-              className={`mt-4 rounded-lg px-4 py-2 text-sm font-semibold ${
-                seguindo.has(c.id) ? "bg-emerald-50 text-emerald-700" : "bg-indigo-600 text-white hover:bg-indigo-700"
-              }`}
-            >
-              {seguindo.has(c.id) ? "✓ Você está seguindo" : "Focar neste concurso"}
-            </button>
-          </div>
-        ))}
-        {concursos.length === 0 && <p className="text-sm text-slate-500">Nenhum concurso cadastrado ainda.</p>}
+              <button
+                onClick={() => seguir(c.id)}
+                disabled={jaSegue}
+                className={cn(
+                  "mt-4 w-full rounded-xl px-4 py-2 text-sm font-semibold transition-colors",
+                  jaSegue ? "flex items-center justify-center gap-1.5 bg-brand-50 text-brand-700" : "bg-brand-600 text-white hover:bg-brand-700"
+                )}
+              >
+                {jaSegue ? (
+                  <>
+                    <CheckCircle2 className="h-4 w-4" /> Você está seguindo
+                  </>
+                ) : (
+                  "Focar neste concurso"
+                )}
+              </button>
+            </Card>
+          );
+        })}
+        {concursos.length === 0 && <p className="text-sm text-ink-500">Nenhum concurso cadastrado ainda.</p>}
       </div>
     </div>
   );

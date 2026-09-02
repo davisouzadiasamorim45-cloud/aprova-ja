@@ -1,8 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { PartyPopper, RotateCcw } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { calcularProximaRevisao } from "@/lib/spaced-repetition/sm2";
+import { cn } from "@/lib/cn";
+import { Card } from "@/components/ui/card";
 
 type Flashcard = {
   id: string;
@@ -14,10 +17,10 @@ type Flashcard = {
 };
 
 const OPCOES = [
-  { qualidade: 1, label: "Errei", classe: "bg-red-100 text-red-700 hover:bg-red-200" },
-  { qualidade: 3, label: "Difícil", classe: "bg-amber-100 text-amber-700 hover:bg-amber-200" },
-  { qualidade: 4, label: "Bom", classe: "bg-emerald-100 text-emerald-700 hover:bg-emerald-200" },
-  { qualidade: 5, label: "Fácil", classe: "bg-indigo-100 text-indigo-700 hover:bg-indigo-200" },
+  { qualidade: 1, label: "Errei", classe: "bg-red-50 text-red-700 hover:bg-red-100" },
+  { qualidade: 3, label: "Difícil", classe: "bg-gold-100 text-gold-800 hover:bg-gold-200" },
+  { qualidade: 4, label: "Bom", classe: "bg-brand-100 text-brand-800 hover:bg-brand-200" },
+  { qualidade: 5, label: "Fácil", classe: "bg-emerald-100 text-emerald-800 hover:bg-emerald-200" },
 ];
 
 export function RevisarFlashcards({ cardsIniciais }: { cardsIniciais: Flashcard[] }) {
@@ -59,33 +62,46 @@ export function RevisarFlashcards({ cardsIniciais }: { cardsIniciais: Flashcard[
 
   if (fila.length === 0) {
     return (
-      <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center">
-        <p className="text-slate-600">Nenhum cartão pendente para revisão hoje. 🎉</p>
-      </div>
+      <Card className="p-10 text-center">
+        <PartyPopper className="mx-auto h-8 w-8 text-gold-500" strokeWidth={1.75} />
+        <p className="mt-3 text-ink-600">Nenhum cartão pendente para revisão hoje.</p>
+      </Card>
     );
   }
 
   if (indice >= fila.length) {
     return (
-      <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center">
-        <p className="text-lg font-semibold text-slate-900">Revisão concluída!</p>
-        <p className="mt-2 text-slate-600">Você revisou {revisados} cartão(ões) hoje.</p>
-      </div>
+      <Card className="p-10 text-center">
+        <PartyPopper className="mx-auto h-8 w-8 text-gold-500" strokeWidth={1.75} />
+        <p className="mt-3 font-display text-lg font-semibold text-ink-900">Revisão concluída!</p>
+        <p className="mt-2 text-ink-600">Você revisou {revisados} cartão(ões) hoje.</p>
+      </Card>
     );
   }
 
   return (
     <div className="mx-auto max-w-lg">
-      <p className="mb-3 text-center text-xs text-slate-400">
-        {indice + 1} de {fila.length}
-      </p>
+      <div className="mb-3 flex items-center justify-between">
+        <p className="text-xs font-medium text-ink-500">
+          {indice + 1} de {fila.length}
+        </p>
+        <p className="text-xs text-ink-400">{revisados} revisados</p>
+      </div>
+      <div className="mb-4 h-1.5 overflow-hidden rounded-full bg-ink-100">
+        <div className="h-full rounded-full bg-brand-500 transition-all duration-300" style={{ width: `${(indice / fila.length) * 100}%` }} />
+      </div>
 
       <button
         onClick={() => setVirado((v) => !v)}
-        className="flex min-h-[220px] w-full flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm transition hover:shadow-md"
+        className={cn(
+          "flex min-h-[240px] w-full flex-col items-center justify-center rounded-2xl border p-8 text-center transition-all duration-200",
+          "shadow-soft hover:shadow-soft-lg",
+          virado ? "border-brand-300 bg-brand-50/50" : "border-ink-200 bg-white"
+        )}
       >
-        <p className="text-lg text-slate-900">{virado ? cardAtual.verso : cardAtual.frente}</p>
-        {!virado && <p className="mt-4 text-xs text-slate-400">Toque para virar</p>}
+        {!virado && <span className="mb-3 text-[11px] font-medium uppercase tracking-wide text-ink-400">Pergunta</span>}
+        <p className="font-display text-xl text-ink-900">{virado ? cardAtual.verso : cardAtual.frente}</p>
+        {!virado && <p className="mt-5 text-xs text-ink-400">Toque para virar o cartão</p>}
       </button>
 
       {virado ? (
@@ -94,14 +110,16 @@ export function RevisarFlashcards({ cardsIniciais }: { cardsIniciais: Flashcard[
             <button
               key={op.qualidade}
               onClick={() => avaliar(op.qualidade)}
-              className={`rounded-lg px-2 py-2.5 text-sm font-semibold transition ${op.classe}`}
+              className={cn("rounded-xl px-2 py-2.5 text-sm font-semibold transition-colors", op.classe)}
             >
               {op.label}
             </button>
           ))}
         </div>
       ) : (
-        <p className="mt-5 text-center text-sm text-slate-400">Lembre-se da resposta antes de virar o cartão</p>
+        <p className="mt-5 flex items-center justify-center gap-1.5 text-center text-sm text-ink-400">
+          <RotateCcw className="h-3.5 w-3.5" /> Lembre-se da resposta antes de virar
+        </p>
       )}
     </div>
   );

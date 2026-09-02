@@ -1,85 +1,288 @@
 import Link from "next/link";
+import {
+  BookOpenCheck,
+  Brain,
+  CalendarCheck2,
+  Check,
+  ChevronRight,
+  ClipboardList,
+  Compass,
+  LineChart,
+  Repeat,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
+import { Logo } from "@/components/ui/logo";
+import { HeroShimmer } from "@/components/hero-shimmer";
+import { buttonClass } from "@/components/ui/button";
+import { PLANOS } from "@/lib/planos";
 
 const RECURSOS = [
   {
-    icone: "📝",
+    icone: BookOpenCheck,
     titulo: "Banco de questões com estatísticas",
     descricao: "Pratique por matéria, banca e dificuldade, e acompanhe sua evolução em tempo real.",
   },
   {
-    icone: "🧠",
+    icone: Brain,
     titulo: "Flashcards com repetição espaçada",
     descricao: "Fixe o conteúdo com um algoritmo que revisa o que você mais esquece, no momento certo.",
   },
   {
-    icone: "🗓️",
+    icone: CalendarCheck2,
     titulo: "Cronograma personalizado",
     descricao: "Um plano de estudos por matéria e tópico, ajustado ao tempo que você tem disponível.",
   },
 ];
 
+const PASSOS = [
+  {
+    numero: "01",
+    icone: Compass,
+    titulo: "Diga qual concurso você quer",
+    descricao: "Escolha da nossa lista ou cadastre o seu. Em menos de 1 minuto o sistema já sabe o que você precisa estudar.",
+  },
+  {
+    numero: "02",
+    icone: ClipboardList,
+    titulo: "Receba um cronograma pronto",
+    descricao: "Com base no tempo que você tem disponível por dia, montamos uma semana de estudos por matéria — editável a qualquer momento.",
+  },
+  {
+    numero: "03",
+    icone: Repeat,
+    titulo: "Treine todo dia com questões e flashcards",
+    descricao: "Pratique questões reais de banca e revise o que você mais esquece, no momento exato em que começaria a esquecer.",
+  },
+  {
+    numero: "04",
+    icone: LineChart,
+    titulo: "Acompanhe sua evolução",
+    descricao: "Veja sua taxa de acerto por matéria e identifique exatamente onde focar antes da prova — sem achismo.",
+  },
+];
+
+const PROVAS = [
+  { valor: "10 min", legenda: "para montar seu cronograma inicial" },
+  { valor: "SM-2", legenda: "algoritmo de repetição espaçada" },
+  { valor: "R$ 0", legenda: "para começar a treinar hoje" },
+];
+
+const PERGUNTAS = [
+  {
+    pergunta: "Preciso já ter estudado a teoria?",
+    resposta:
+      "O AprovaJá é uma ferramenta de treino, não de teoria. Funciona melhor para quem já estudou o conteúdo (por curso, apostila ou videoaula) e precisa fixar e praticar — mas o cronograma te ajuda a organizar isso desde o início.",
+  },
+  {
+    pergunta: "Funciona para qualquer concurso?",
+    resposta:
+      "Sim. Você pode escolher um concurso do nosso catálogo ou cadastrar o seu próprio edital com as matérias específicas — o cronograma e as questões se adaptam ao que você cadastrar.",
+  },
+  {
+    pergunta: "Posso cancelar quando quiser?",
+    resposta:
+      "Sim, sem multa nem burocracia. Você gerencia sua assinatura direto pelo painel e pode voltar para o plano grátis a qualquer momento.",
+  },
+  {
+    pergunta: "Como funciona a repetição espaçada dos flashcards?",
+    resposta:
+      "Usamos o algoritmo SM-2 (o mesmo por trás do Anki): cada vez que você avalia um cartão, o sistema calcula o momento ideal para revisá-lo de novo — cartões fáceis voltam depois de mais tempo, os difíceis voltam logo.",
+  },
+];
+
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
-        <span className="text-lg font-bold text-slate-900">
-          Aprova<span className="text-indigo-600">Já</span>
-        </span>
-        <nav className="flex items-center gap-4">
-          <Link href="/login" className="text-sm font-medium text-slate-600 hover:text-slate-900">
+        <Logo />
+        <nav className="flex items-center gap-2 sm:gap-4">
+          <Link href="/login" className="rounded-lg px-3 py-2 text-sm font-medium text-ink-600 transition hover:text-ink-900">
             Entrar
           </Link>
-          <Link href="/cadastro" className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">
+          <Link href="/cadastro" className={buttonClass("primary", "sm")}>
             Começar grátis
           </Link>
         </nav>
       </header>
 
-      <section className="mx-auto max-w-4xl px-6 py-20 text-center">
-        <h1 className="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
-          Treine para o seu concurso com <span className="text-indigo-600">método</span>, não no achismo
-        </h1>
-        <p className="mx-auto mt-5 max-w-2xl text-lg text-slate-600">
-          Questões, flashcards com repetição espaçada e cronograma de estudos em um único lugar — feito para
-          concurseiros que já estudam a teoria e precisam de treino de verdade.
-        </p>
-        <div className="mt-8 flex justify-center gap-3">
-          <Link href="/cadastro" className="rounded-lg bg-indigo-600 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-700">
-            Criar minha conta grátis
-          </Link>
-          <Link href="/login" className="rounded-lg border border-slate-300 px-6 py-3 text-sm font-semibold text-slate-700 hover:bg-slate-50">
-            Já tenho conta
-          </Link>
+      {/* HERO */}
+      <section className="relative overflow-hidden">
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[560px]">
+          <HeroShimmer />
         </div>
-      </section>
+        <div className="relative z-10 mx-auto max-w-4xl px-6 pt-16 pb-8 text-center sm:pt-24">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-200 bg-brand-50 px-3.5 py-1.5 text-xs font-medium text-brand-700">
+            <Sparkles className="h-3.5 w-3.5" />
+            Feito para quem já estuda a teoria e precisa treinar de verdade
+          </span>
 
-      <section className="mx-auto max-w-6xl px-6 pb-20">
-        <div className="grid gap-6 sm:grid-cols-3">
-          {RECURSOS.map((r) => (
-            <div key={r.titulo} className="rounded-2xl border border-slate-200 p-6">
-              <span className="text-3xl">{r.icone}</span>
-              <h3 className="mt-4 font-semibold text-slate-900">{r.titulo}</h3>
-              <p className="mt-2 text-sm text-slate-600">{r.descricao}</p>
+          <h1 className="mt-6 font-display text-4xl font-semibold tracking-tight text-ink-900 sm:text-6xl sm:leading-[1.08]">
+            Treine para o seu concurso com <span className="text-brand-600">método</span>, não no achismo
+            <span className="gradient-cursor" aria-hidden />
+          </h1>
+          <p className="mx-auto mt-6 max-w-2xl text-lg leading-relaxed text-ink-600">
+            Questões, flashcards com repetição espaçada e cronograma de estudos em um único lugar —
+            organizado para você chegar no dia da prova sabendo exatamente onde está.
+          </p>
+          <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+            <Link href="/cadastro" className={buttonClass("primary", "lg")}>
+              Criar minha conta grátis
+            </Link>
+            <Link href="/login" className={buttonClass("outline", "lg")}>
+              Já tenho conta
+            </Link>
+          </div>
+        </div>
+
+        <div className="mx-auto mt-14 grid max-w-3xl grid-cols-3 divide-x divide-ink-200 border-y border-ink-200 px-6 py-7">
+          {PROVAS.map((p) => (
+            <div key={p.valor} className="px-2 text-center sm:px-4">
+              <p className="font-display text-2xl font-semibold text-ink-900 sm:text-3xl">{p.valor}</p>
+              <p className="mt-1 text-xs text-ink-500 sm:text-sm">{p.legenda}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="border-t border-slate-100 bg-slate-50 py-16">
-        <div className="mx-auto max-w-4xl px-6 text-center">
-          <h2 className="text-2xl font-bold text-slate-900">Planos para todo momento da sua preparação</h2>
-          <p className="mt-2 text-slate-600">Comece grátis. Evolua quando fizer sentido para você.</p>
-          <Link
-            href="/cadastro"
-            className="mt-6 inline-block rounded-lg bg-indigo-600 px-6 py-3 text-sm font-semibold text-white hover:bg-indigo-700"
-          >
-            Ver planos e começar
+      {/* COMO FUNCIONA */}
+      <section className="mx-auto max-w-6xl px-6 py-20 sm:py-24">
+        <div className="mx-auto max-w-2xl text-center">
+          <span className="text-xs font-semibold uppercase tracking-wide text-brand-600">Como funciona</span>
+          <h2 className="mt-2 font-display text-3xl font-semibold text-ink-900">Do zero ao dia da prova, em 4 passos</h2>
+          <p className="mt-3 text-ink-600">Sem planilha, sem post-it, sem perder o fio da meada.</p>
+        </div>
+
+        <div className="mt-14 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+          {PASSOS.map((p, i) => (
+            <div key={p.titulo} className="relative">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-ink-900 text-brand-300">
+                <p.icone className="h-5 w-5" strokeWidth={1.9} />
+              </div>
+              <span className="mt-4 block font-display text-sm font-semibold text-gold-600">{p.numero}</span>
+              <h3 className="mt-1 font-display text-lg font-semibold text-ink-900">{p.titulo}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-ink-600">{p.descricao}</p>
+              {i < PASSOS.length - 1 && (
+                <ChevronRight className="absolute right-[-28px] top-4 hidden h-5 w-5 text-ink-300 lg:block" aria-hidden />
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* RECURSOS */}
+      <section className="border-y border-ink-200 bg-white py-20 sm:py-24">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="mx-auto max-w-2xl text-center">
+            <span className="text-xs font-semibold uppercase tracking-wide text-brand-600">O que você usa todo dia</span>
+            <h2 className="mt-2 font-display text-3xl font-semibold text-ink-900">Tudo que falta entre estudar e passar</h2>
+            <p className="mt-3 text-ink-600">Três ferramentas que trabalham juntas para transformar teoria em aprovação.</p>
+          </div>
+
+          <div className="mt-12 grid gap-5 sm:grid-cols-3">
+            {RECURSOS.map((r) => (
+              <div
+                key={r.titulo}
+                className="rounded-2xl border border-ink-200/70 bg-white p-7 shadow-soft transition-transform duration-150 hover:-translate-y-1"
+              >
+                <div className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
+                  <r.icone className="h-5 w-5" strokeWidth={2} />
+                </div>
+                <h3 className="mt-5 font-display text-lg font-semibold text-ink-900">{r.titulo}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-ink-600">{r.descricao}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* PLANOS */}
+      <section id="planos" className="bg-ink-900 bg-grain py-20 sm:py-24">
+        <div className="mx-auto max-w-6xl px-6">
+          <div className="mx-auto max-w-2xl text-center text-white">
+            <span className="text-xs font-semibold uppercase tracking-wide text-gold-300">Planos</span>
+            <h2 className="mt-2 font-display text-3xl font-semibold">Para todo momento da sua preparação</h2>
+            <p className="mt-3 text-ink-300">Comece grátis. Evolua quando fizer sentido para você — cancele quando quiser.</p>
+          </div>
+
+          <div className="mt-12 grid gap-5 md:grid-cols-3">
+            {PLANOS.map((p) => (
+              <div
+                key={p.id}
+                className={`relative flex flex-col rounded-2xl border bg-white p-6 ${
+                  p.recomendado ? "border-gold-400 shadow-soft-lg md:-translate-y-2" : "border-transparent shadow-soft"
+                }`}
+              >
+                {p.recomendado && (
+                  <span className="absolute -top-3 left-6 inline-flex items-center gap-1 rounded-full bg-gold-400 px-3 py-1 text-xs font-semibold text-ink-900">
+                    <Sparkles className="h-3 w-3" /> Mais escolhido
+                  </span>
+                )}
+                <h3 className="font-display text-lg font-semibold text-ink-900">{p.nome}</h3>
+                <p className="mt-1 flex items-baseline gap-1 font-display text-2xl font-semibold text-ink-900">
+                  {p.preco}
+                  {p.periodo && <span className="text-sm font-medium text-ink-400">{p.periodo}</span>}
+                </p>
+                <p className="mt-1 text-sm text-ink-500">{p.descricao}</p>
+
+                <ul className="mt-4 flex flex-1 flex-col gap-2.5 text-sm text-ink-600">
+                  {p.recursos.map((r) => (
+                    <li key={r} className="flex gap-2">
+                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-500" /> {r}
+                    </li>
+                  ))}
+                </ul>
+
+                <Link
+                  href="/cadastro"
+                  className={buttonClass(p.recomendado ? "secondary" : "outline", "md", "mt-5 justify-center")}
+                >
+                  {p.id === "free" ? "Começar grátis" : `Assinar ${p.nome}`}
+                </Link>
+              </div>
+            ))}
+          </div>
+
+          <p className="mt-8 flex items-center justify-center gap-1.5 text-center text-xs text-ink-400">
+            <ShieldCheck className="h-3.5 w-3.5" /> Sem cartão de crédito para o plano grátis
+          </p>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="mx-auto max-w-3xl px-6 py-20 sm:py-24">
+        <div className="text-center">
+          <span className="text-xs font-semibold uppercase tracking-wide text-brand-600">Dúvidas</span>
+          <h2 className="mt-2 font-display text-3xl font-semibold text-ink-900">Perguntas frequentes</h2>
+        </div>
+
+        <div className="mt-10 divide-y divide-ink-200 rounded-2xl border border-ink-200 bg-white shadow-soft">
+          {PERGUNTAS.map((f) => (
+            <details key={f.pergunta} className="group px-6 py-5 open:bg-brand-50/30">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-medium text-ink-900">
+                {f.pergunta}
+                <ChevronRight className="h-4 w-4 shrink-0 text-ink-400 transition-transform group-open:rotate-90" />
+              </summary>
+              <p className="mt-3 text-sm leading-relaxed text-ink-600">{f.resposta}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA FINAL */}
+      <section className="border-t border-ink-200 bg-white py-16 text-center">
+        <div className="mx-auto max-w-xl px-6">
+          <h2 className="font-display text-2xl font-semibold text-ink-900">Pronto para treinar com método?</h2>
+          <p className="mt-2 text-ink-600">Crie sua conta grátis agora e monte seu cronograma em menos de 10 minutos.</p>
+          <Link href="/cadastro" className={buttonClass("primary", "lg", "mt-6")}>
+            Criar minha conta grátis
           </Link>
         </div>
       </section>
 
-      <footer className="border-t border-slate-100 py-8 text-center text-sm text-slate-400">
-        © {new Date().getFullYear()} AprovaJá. Feito para quem estuda de verdade.
+      <footer className="py-10 text-center text-sm text-ink-400">
+        <Logo mark={false} className="justify-center text-sm text-ink-500" />
+        <p className="mt-2">© {new Date().getFullYear()} AprovaJá. Feito para quem estuda de verdade.</p>
       </footer>
     </div>
   );

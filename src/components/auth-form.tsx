@@ -2,7 +2,10 @@
 
 import { useActionState } from "react";
 import Link from "next/link";
+import { AlertCircle } from "lucide-react";
 import type { AuthState } from "@/lib/auth/actions";
+import { Button } from "@/components/ui/button";
+import { Input, Label } from "@/components/ui/field";
 
 type Props = {
   mode: "login" | "cadastro";
@@ -14,84 +17,69 @@ export function AuthForm({ mode, action }: Props) {
   const isLogin = mode === "login";
 
   return (
-    <form action={formAction} className="flex flex-col gap-4">
-      {!isLogin && (
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="full_name" className="text-sm font-medium text-slate-700">
-            Nome completo
-          </label>
-          <input
-            id="full_name"
-            name="full_name"
-            type="text"
+    <div>
+      <h1 className="font-display text-xl font-semibold text-ink-900">
+        {isLogin ? "Entrar na sua conta" : "Criar sua conta grátis"}
+      </h1>
+      <p className="mt-1 text-sm text-ink-500">
+        {isLogin ? "Continue de onde parou." : "Leva menos de um minuto."}
+      </p>
+
+      <form action={formAction} className="mt-6 flex flex-col gap-4">
+        {!isLogin && (
+          <div>
+            <Label htmlFor="full_name">Nome completo</Label>
+            <Input id="full_name" name="full_name" type="text" required autoComplete="name" placeholder="Seu nome" />
+          </div>
+        )}
+
+        <div>
+          <Label htmlFor="email">E-mail</Label>
+          <Input id="email" name="email" type="email" required autoComplete="email" placeholder="voce@email.com" />
+        </div>
+
+        <div>
+          <Label htmlFor="password">Senha</Label>
+          <Input
+            id="password"
+            name="password"
+            type="password"
             required
-            autoComplete="name"
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
-            placeholder="Seu nome"
+            minLength={6}
+            autoComplete={isLogin ? "current-password" : "new-password"}
+            placeholder="••••••••"
           />
         </div>
-      )}
 
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="email" className="text-sm font-medium text-slate-700">
-          E-mail
-        </label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          required
-          autoComplete="email"
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
-          placeholder="voce@email.com"
-        />
-      </div>
-
-      <div className="flex flex-col gap-1.5">
-        <label htmlFor="password" className="text-sm font-medium text-slate-700">
-          Senha
-        </label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          required
-          minLength={6}
-          autoComplete={isLogin ? "current-password" : "new-password"}
-          className="rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
-          placeholder="••••••••"
-        />
-      </div>
-
-      {state?.error && (
-        <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{state.error}</p>
-      )}
-
-      <button
-        type="submit"
-        disabled={pending}
-        className="mt-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:opacity-60"
-      >
-        {pending ? "Aguarde..." : isLogin ? "Entrar" : "Criar conta"}
-      </button>
-
-      <p className="text-center text-sm text-slate-500">
-        {isLogin ? (
-          <>
-            Ainda não tem conta?{" "}
-            <Link href="/cadastro" className="font-medium text-indigo-600 hover:underline">
-              Cadastre-se grátis
-            </Link>
-          </>
-        ) : (
-          <>
-            Já tem conta?{" "}
-            <Link href="/login" className="font-medium text-indigo-600 hover:underline">
-              Entrar
-            </Link>
-          </>
+        {state?.error && (
+          <p className="flex items-start gap-2 rounded-xl bg-red-50 px-3.5 py-2.5 text-sm text-red-700">
+            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+            {state.error}
+          </p>
         )}
-      </p>
-    </form>
+
+        <Button type="submit" disabled={pending} className="mt-1">
+          {pending ? "Aguarde..." : isLogin ? "Entrar" : "Criar conta"}
+        </Button>
+
+        <p className="text-center text-sm text-ink-500">
+          {isLogin ? (
+            <>
+              Ainda não tem conta?{" "}
+              <Link href="/cadastro" className="font-medium text-brand-700 hover:underline">
+                Cadastre-se grátis
+              </Link>
+            </>
+          ) : (
+            <>
+              Já tem conta?{" "}
+              <Link href="/login" className="font-medium text-brand-700 hover:underline">
+                Entrar
+              </Link>
+            </>
+          )}
+        </p>
+      </form>
+    </div>
   );
 }

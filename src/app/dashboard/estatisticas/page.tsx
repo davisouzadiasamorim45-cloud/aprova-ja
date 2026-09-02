@@ -1,4 +1,6 @@
+import { BarChart3, CheckCircle2, ListChecks, Target } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
+import { Card } from "@/components/ui/card";
 
 type TentativaRow = {
   id: string;
@@ -11,7 +13,9 @@ type TentativaRow = {
 };
 
 function formatarData(iso: string) {
-  return new Date(iso).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
+  // "iso" é uma data pura (YYYY-MM-DD); acrescentar hora local evita que o
+  // JS interprete como meia-noite UTC e "volte" um dia em fusos negativos (ex: Brasília).
+  return new Date(iso + "T00:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
 }
 
 export default async function EstatisticasPage() {
@@ -64,71 +68,76 @@ export default async function EstatisticasPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-slate-900">Estatísticas de desempenho</h1>
-      <p className="mt-1 text-sm text-slate-500">Baseado nas suas últimas {total} tentativas de questões.</p>
+      <h1 className="font-display text-2xl font-semibold text-ink-900">Estatísticas de desempenho</h1>
+      <p className="mt-1 text-sm text-ink-500">Baseado nas suas últimas {total} tentativas de questões.</p>
 
       <div className="mt-6 grid gap-4 sm:grid-cols-3">
-        <div className="rounded-2xl border border-slate-200 bg-white p-5">
-          <p className="text-sm text-slate-500">Questões respondidas</p>
-          <p className="mt-1 text-3xl font-bold text-slate-900">{total}</p>
-        </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-5">
-          <p className="text-sm text-slate-500">Acertos</p>
-          <p className="mt-1 text-3xl font-bold text-emerald-600">{acertos}</p>
-        </div>
-        <div className="rounded-2xl border border-slate-200 bg-white p-5">
-          <p className="text-sm text-slate-500">Taxa de acerto</p>
-          <p className="mt-1 text-3xl font-bold text-indigo-600">{taxaGeral}%</p>
-        </div>
+        <Card className="p-5">
+          <ListChecks className="h-5 w-5 text-ink-400" strokeWidth={1.9} />
+          <p className="mt-3 text-sm text-ink-500">Questões respondidas</p>
+          <p className="mt-1 font-display text-3xl font-semibold text-ink-900">{total}</p>
+        </Card>
+        <Card className="p-5">
+          <CheckCircle2 className="h-5 w-5 text-brand-500" strokeWidth={1.9} />
+          <p className="mt-3 text-sm text-ink-500">Acertos</p>
+          <p className="mt-1 font-display text-3xl font-semibold text-brand-600">{acertos}</p>
+        </Card>
+        <Card className="p-5">
+          <Target className="h-5 w-5 text-gold-500" strokeWidth={1.9} />
+          <p className="mt-3 text-sm text-ink-500">Taxa de acerto</p>
+          <p className="mt-1 font-display text-3xl font-semibold text-gold-600">{taxaGeral}%</p>
+        </Card>
       </div>
 
       <div className="mt-8">
-        <h2 className="text-lg font-semibold text-slate-900">Últimos 14 dias</h2>
-        <div className="mt-3 flex h-32 items-end gap-1.5 rounded-2xl border border-slate-200 bg-white p-4">
+        <h2 className="flex items-center gap-2 font-display text-lg font-semibold text-ink-900">
+          <BarChart3 className="h-4.5 w-4.5 text-ink-400" /> Últimos 14 dias
+        </h2>
+        <Card className="mt-3 flex h-36 items-end gap-1.5 p-4">
           {[...porDia.entries()].map(([dia, v]) => {
-            const altura = v.total > 0 ? Math.max(8, (v.total / Math.max(...[...porDia.values()].map((x) => x.total), 1)) * 100) : 4;
+            const altura = v.total > 0 ? Math.max(10, (v.total / Math.max(...[...porDia.values()].map((x) => x.total), 1)) * 100) : 3;
             const taxa = v.total > 0 ? Math.round((v.acertos / v.total) * 100) : 0;
             return (
-              <div key={dia} className="flex flex-1 flex-col items-center gap-1" title={`${v.total} questões, ${taxa}% de acerto`}>
+              <div key={dia} className="group flex flex-1 flex-col items-center gap-1.5" title={`${v.total} questões, ${taxa}% de acerto`}>
                 <div className="flex w-full flex-1 items-end">
                   <div
-                    className="w-full rounded-t bg-indigo-500"
-                    style={{ height: `${altura}%`, opacity: v.total > 0 ? 1 : 0.15 }}
+                    className={`w-full rounded-t transition-colors ${v.total > 0 ? "bg-brand-500 group-hover:bg-brand-600" : "bg-ink-100"}`}
+                    style={{ height: `${altura}%` }}
                   />
                 </div>
-                <span className="text-[9px] text-slate-400">{formatarData(dia)}</span>
+                <span className="text-[9px] text-ink-400">{formatarData(dia)}</span>
               </div>
             );
           })}
-        </div>
+        </Card>
       </div>
 
       <div className="mt-8">
-        <h2 className="text-lg font-semibold text-slate-900">Desempenho por matéria</h2>
-        <div className="mt-3 overflow-hidden rounded-2xl border border-slate-200 bg-white">
+        <h2 className="font-display text-lg font-semibold text-ink-900">Desempenho por matéria</h2>
+        <Card className="mt-3 overflow-hidden">
           {materiasOrdenadas.length === 0 && (
-            <p className="p-5 text-sm text-slate-500">
+            <p className="p-5 text-sm text-ink-500">
               Você ainda não respondeu nenhuma questão. Vá para o Banco de questões para começar.
             </p>
           )}
           {materiasOrdenadas.map((m) => {
             const taxa = m.total > 0 ? Math.round((m.acertos / m.total) * 100) : 0;
             return (
-              <div key={m.nome} className="flex items-center gap-4 border-b border-slate-100 px-5 py-3 last:border-0">
-                <span className="w-40 shrink-0 truncate text-sm font-medium text-slate-700">{m.nome}</span>
-                <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-100">
+              <div key={m.nome} className="flex items-center gap-4 border-b border-ink-100 px-5 py-3 last:border-0">
+                <span className="w-40 shrink-0 truncate text-sm font-medium text-ink-700">{m.nome}</span>
+                <div className="h-2 flex-1 overflow-hidden rounded-full bg-ink-100">
                   <div
-                    className={`h-full rounded-full ${taxa >= 70 ? "bg-emerald-500" : taxa >= 50 ? "bg-amber-500" : "bg-red-500"}`}
+                    className={`h-full rounded-full ${taxa >= 70 ? "bg-brand-500" : taxa >= 50 ? "bg-gold-500" : "bg-red-500"}`}
                     style={{ width: `${taxa}%` }}
                   />
                 </div>
-                <span className="w-28 shrink-0 text-right text-sm text-slate-500">
+                <span className="w-28 shrink-0 text-right text-sm text-ink-500">
                   {m.acertos}/{m.total} ({taxa}%)
                 </span>
               </div>
             );
           })}
-        </div>
+        </Card>
       </div>
     </div>
   );

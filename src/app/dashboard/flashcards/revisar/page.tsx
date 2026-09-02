@@ -18,8 +18,8 @@ export default async function RevisarPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-slate-900">Revisão de hoje</h1>
-      <p className="mt-1 text-sm text-slate-500">
+      <h1 className="font-display text-2xl font-semibold text-ink-900">Revisão de hoje</h1>
+      <p className="mt-1 text-sm text-ink-500">
         Avalie sua lembrança de cada cartão — os próximos intervalos se ajustam automaticamente.
       </p>
 

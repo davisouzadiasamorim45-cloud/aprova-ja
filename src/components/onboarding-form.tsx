@@ -2,7 +2,10 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import { AlertCircle } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Input, Label, Select } from "@/components/ui/field";
 
 type Concurso = { id: string; nome: string; orgao: string | null; nivel: string | null };
 
@@ -103,12 +106,8 @@ export function OnboardingForm({ concursos }: { concursos: Concurso[] }) {
   return (
     <form onSubmit={enviar} className="flex flex-col gap-5">
       <div>
-        <label className="text-sm font-medium text-slate-700">Qual concurso você pretende fazer?</label>
-        <select
-          value={concursoId}
-          onChange={(e) => setConcursoId(e.target.value)}
-          className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
-        >
+        <Label>Qual concurso você pretende fazer?</Label>
+        <Select value={concursoId} onChange={(e) => setConcursoId(e.target.value)}>
           {concursos.map((c) => (
             <option key={c.id} value={c.id}>
               {c.nome} {c.orgao ? `· ${c.orgao}` : ""}
@@ -116,31 +115,26 @@ export function OnboardingForm({ concursos }: { concursos: Concurso[] }) {
           ))}
           <option value={NOVO}>Outro concurso (vou digitar)</option>
           <option value={AINDA_NAO_SEI}>Ainda não decidi</option>
-        </select>
+        </Select>
       </div>
 
       {concursoId === NOVO && (
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="sm:col-span-2">
-            <label className="text-sm font-medium text-slate-700">Nome do concurso</label>
-            <input
+            <Label>Nome do concurso</Label>
+            <Input
               value={novoNome}
               onChange={(e) => setNovoNome(e.target.value)}
               placeholder="Ex: Tribunal Regional do Trabalho - Técnico"
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
             />
           </div>
           <div>
-            <label className="text-sm font-medium text-slate-700">Nível</label>
-            <select
-              value={nivel}
-              onChange={(e) => setNivel(e.target.value as "fundamental" | "medio" | "superior")}
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
-            >
+            <Label>Nível</Label>
+            <Select value={nivel} onChange={(e) => setNivel(e.target.value as "fundamental" | "medio" | "superior")}>
               <option value="fundamental">Fundamental</option>
               <option value="medio">Médio</option>
               <option value="superior">Superior</option>
-            </select>
+            </Select>
           </div>
         </div>
       )}
@@ -148,37 +142,31 @@ export function OnboardingForm({ concursos }: { concursos: Concurso[] }) {
       {concursoId !== AINDA_NAO_SEI && (
         <div className="grid gap-3 sm:grid-cols-2">
           <div>
-            <label className="text-sm font-medium text-slate-700">Horas de estudo por dia</label>
-            <input
+            <Label>Horas de estudo por dia</Label>
+            <Input
               type="number"
               min={0.5}
               step={0.5}
               value={horasPorDia}
               onChange={(e) => setHorasPorDia(Number(e.target.value))}
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
             />
           </div>
           <div>
-            <label className="text-sm font-medium text-slate-700">Data da prova (se souber)</label>
-            <input
-              type="date"
-              value={dataProva}
-              onChange={(e) => setDataProva(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
-            />
+            <Label>Data da prova (se souber)</Label>
+            <Input type="date" value={dataProva} onChange={(e) => setDataProva(e.target.value)} />
           </div>
         </div>
       )}
 
-      {erro && <p className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{erro}</p>}
+      {erro && (
+        <p className="flex items-start gap-2 rounded-xl bg-red-50 px-3.5 py-2.5 text-sm text-red-700">
+          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" /> {erro}
+        </p>
+      )}
 
-      <button
-        type="submit"
-        disabled={enviando}
-        className="rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-60"
-      >
+      <Button type="submit" disabled={enviando}>
         {enviando ? "Preparando seu painel..." : "Começar a estudar"}
-      </button>
+      </Button>
     </form>
   );
 }
