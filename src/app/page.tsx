@@ -12,9 +12,11 @@ import {
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
-import { Logo } from "@/components/ui/logo";
+import { Logo, LogoBadge } from "@/components/ui/logo";
 import { HeroShimmer } from "@/components/hero-shimmer";
 import { buttonClass } from "@/components/ui/button";
+import { Reveal } from "@/components/ui/reveal";
+import { ProductShowcase } from "@/components/product-showcase";
 import { PLANOS } from "@/lib/planos";
 
 const RECURSOS = [
@@ -111,6 +113,7 @@ export default function LandingPage() {
         <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[560px]">
           <HeroShimmer />
         </div>
+        <LogoBadge className="pointer-events-none absolute right-6 top-20 z-0 hidden h-28 w-28 animate-spin-slow opacity-80 lg:block xl:right-16" />
         <div className="relative z-10 mx-auto max-w-4xl px-6 pt-16 pb-8 text-center sm:pt-24">
           <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-200 bg-brand-50 px-3.5 py-1.5 text-xs font-medium text-brand-700">
             <Sparkles className="h-3.5 w-3.5" />
@@ -147,15 +150,15 @@ export default function LandingPage() {
 
       {/* COMO FUNCIONA */}
       <section className="mx-auto max-w-6xl px-6 py-20 sm:py-24">
-        <div className="mx-auto max-w-2xl text-center">
+        <Reveal className="mx-auto max-w-2xl text-center">
           <span className="text-xs font-semibold uppercase tracking-wide text-brand-600">Como funciona</span>
           <h2 className="mt-2 font-display text-3xl font-semibold text-ink-900">Do zero ao dia da prova, em 4 passos</h2>
           <p className="mt-3 text-ink-600">Sem planilha, sem post-it, sem perder o fio da meada.</p>
-        </div>
+        </Reveal>
 
         <div className="mt-14 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
           {PASSOS.map((p, i) => (
-            <div key={p.titulo} className="relative">
+            <Reveal key={p.titulo} delay={i * 90} className="relative">
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-ink-900 text-brand-300">
                 <p.icone className="h-5 w-5" strokeWidth={1.9} />
               </div>
@@ -165,24 +168,40 @@ export default function LandingPage() {
               {i < PASSOS.length - 1 && (
                 <ChevronRight className="absolute right-[-28px] top-4 hidden h-5 w-5 text-ink-300 lg:block" aria-hidden />
               )}
-            </div>
+            </Reveal>
           ))}
+        </div>
+      </section>
+
+      {/* VITRINE DO PRODUTO */}
+      <section className="border-y border-ink-200 bg-ink-50/60 py-20 sm:py-24">
+        <div className="mx-auto max-w-6xl px-6">
+          <Reveal className="mx-auto max-w-2xl text-center">
+            <span className="text-xs font-semibold uppercase tracking-wide text-brand-600">Veja por dentro</span>
+            <h2 className="mt-2 font-display text-3xl font-semibold text-ink-900">Cada tela, feita pra um passo do seu estudo</h2>
+            <p className="mt-3 text-ink-600">Clique nas abas abaixo e veja como cada função funciona na prática.</p>
+          </Reveal>
+
+          <Reveal delay={100} className="mt-12">
+            <ProductShowcase />
+          </Reveal>
         </div>
       </section>
 
       {/* RECURSOS */}
       <section className="border-y border-ink-200 bg-white py-20 sm:py-24">
         <div className="mx-auto max-w-6xl px-6">
-          <div className="mx-auto max-w-2xl text-center">
+          <Reveal className="mx-auto max-w-2xl text-center">
             <span className="text-xs font-semibold uppercase tracking-wide text-brand-600">O que você usa todo dia</span>
             <h2 className="mt-2 font-display text-3xl font-semibold text-ink-900">Tudo que falta entre estudar e passar</h2>
             <p className="mt-3 text-ink-600">Três ferramentas que trabalham juntas para transformar teoria em aprovação.</p>
-          </div>
+          </Reveal>
 
           <div className="mt-12 grid gap-5 sm:grid-cols-3">
-            {RECURSOS.map((r) => (
-              <div
+            {RECURSOS.map((r, i) => (
+              <Reveal
                 key={r.titulo}
+                delay={i * 100}
                 className="rounded-2xl border border-ink-200/70 bg-white p-7 shadow-soft transition-transform duration-150 hover:-translate-y-1"
               >
                 <div className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
@@ -190,7 +209,7 @@ export default function LandingPage() {
                 </div>
                 <h3 className="mt-5 font-display text-lg font-semibold text-ink-900">{r.titulo}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink-600">{r.descricao}</p>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
@@ -199,16 +218,17 @@ export default function LandingPage() {
       {/* PLANOS */}
       <section id="planos" className="bg-ink-900 bg-grain py-20 sm:py-24">
         <div className="mx-auto max-w-6xl px-6">
-          <div className="mx-auto max-w-2xl text-center text-white">
+          <Reveal className="mx-auto max-w-2xl text-center text-white">
             <span className="text-xs font-semibold uppercase tracking-wide text-gold-300">Planos</span>
             <h2 className="mt-2 font-display text-3xl font-semibold">Para todo momento da sua preparação</h2>
             <p className="mt-3 text-ink-300">Comece grátis. Evolua quando fizer sentido para você — cancele quando quiser.</p>
-          </div>
+          </Reveal>
 
           <div className="mt-12 grid gap-5 md:grid-cols-3">
-            {PLANOS.map((p) => (
-              <div
+            {PLANOS.map((p, i) => (
+              <Reveal
                 key={p.id}
+                delay={i * 100}
                 className={`relative flex flex-col rounded-2xl border bg-white p-6 ${
                   p.recomendado ? "border-gold-400 shadow-soft-lg md:-translate-y-2" : "border-transparent shadow-soft"
                 }`}
@@ -239,7 +259,7 @@ export default function LandingPage() {
                 >
                   {p.id === "free" ? "Começar grátis" : `Assinar ${p.nome}`}
                 </Link>
-              </div>
+              </Reveal>
             ))}
           </div>
 
@@ -251,12 +271,12 @@ export default function LandingPage() {
 
       {/* FAQ */}
       <section className="mx-auto max-w-3xl px-6 py-20 sm:py-24">
-        <div className="text-center">
+        <Reveal className="text-center">
           <span className="text-xs font-semibold uppercase tracking-wide text-brand-600">Dúvidas</span>
           <h2 className="mt-2 font-display text-3xl font-semibold text-ink-900">Perguntas frequentes</h2>
-        </div>
+        </Reveal>
 
-        <div className="mt-10 divide-y divide-ink-200 rounded-2xl border border-ink-200 bg-white shadow-soft">
+        <Reveal delay={120} className="mt-10 divide-y divide-ink-200 rounded-2xl border border-ink-200 bg-white shadow-soft">
           {PERGUNTAS.map((f) => (
             <details key={f.pergunta} className="group px-6 py-5 open:bg-brand-50/30">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-medium text-ink-900">
@@ -266,23 +286,23 @@ export default function LandingPage() {
               <p className="mt-3 text-sm leading-relaxed text-ink-600">{f.resposta}</p>
             </details>
           ))}
-        </div>
+        </Reveal>
       </section>
 
       {/* CTA FINAL */}
       <section className="border-t border-ink-200 bg-white py-16 text-center">
-        <div className="mx-auto max-w-xl px-6">
+        <Reveal className="mx-auto max-w-xl px-6">
           <h2 className="font-display text-2xl font-semibold text-ink-900">Pronto para treinar com método?</h2>
           <p className="mt-2 text-ink-600">Crie sua conta grátis agora e monte seu cronograma em menos de 10 minutos.</p>
           <Link href="/cadastro" className={buttonClass("primary", "lg", "mt-6")}>
             Criar minha conta grátis
           </Link>
-        </div>
+        </Reveal>
       </section>
 
-      <footer className="py-10 text-center text-sm text-ink-400">
-        <Logo mark={false} className="justify-center text-sm text-ink-500" />
-        <p className="mt-2">© {new Date().getFullYear()} AprovaJá. Feito para quem estuda de verdade.</p>
+      <footer className="py-12 text-center text-sm text-ink-400">
+        <Logo tagline className="justify-center" />
+        <p className="mt-4">© {new Date().getFullYear()} aprova já. Feito para quem estuda de verdade.</p>
       </footer>
     </div>
   );
