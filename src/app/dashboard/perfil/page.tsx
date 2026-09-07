@@ -70,13 +70,13 @@ export default async function PerfilPage() {
         </Link>
 
         <Link
-          href="/dashboard/planos"
+          href="/dashboard/perfil/assinatura"
           className="flex items-center gap-3 rounded-2xl border border-ink-200 bg-surface p-4 transition-colors hover:border-brand-300 hover:bg-brand-50"
         >
           <Wallet className="h-5 w-5 shrink-0 text-ink-500" />
           <div className="min-w-0 flex-1">
-            <p className="text-sm font-medium text-ink-900">Plano e assinatura</p>
-            <p className="text-xs text-ink-500">Upgrade, cobrança e cancelamento</p>
+            <p className="text-sm font-medium text-ink-900">Pagamento e assinatura</p>
+            <p className="text-xs text-ink-500">Cartões, cobrança e cancelamento</p>
           </div>
           <ChevronRight className="h-4 w-4 shrink-0 text-ink-400" />
         </Link>
