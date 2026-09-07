@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
 import { createClient, createServiceRoleClient } from "@/lib/supabase/server";
 import { getStripe } from "@/lib/stripe/client";
 import { ESTADOS } from "@/lib/estados";
@@ -56,6 +57,67 @@ export async function signUpAction(_prevState: AuthState, formData: FormData): P
 
   revalidatePath("/", "layout");
   redirect("/onboarding");
+}
+
+export type RecuperarSenhaState = { error?: string; sucesso?: boolean } | undefined;
+
+/**
+ * Dispara o e-mail de recuperação de senha do Supabase. Sempre retorna
+ * sucesso (mesmo se o e-mail não existir) pra não revelar quais e-mails
+ * têm conta cadastrada — o próprio Supabase já segue essa prática.
+ */
+export async function recuperarSenhaAction(_prevState: RecuperarSenhaState, formData: FormData): Promise<RecuperarSenhaState> {
+  const email = String(formData.get("email") || "").trim();
+  if (!email) {
+    return { error: "Informe seu e-mail." };
+  }
+
+  const origin = (await headers()).get("origin") ?? process.env.NEXT_PUBLIC_SITE_URL;
+  const supabase = await createClient();
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${origin}/auth/callback?next=/redefinir-senha`,
+  });
+
+  if (error) {
+    return { error: "Não foi possível enviar o link agora. Tente novamente em instantes." };
+  }
+
+  return { sucesso: true };
+}
+
+export type RedefinirSenhaState = { error?: string } | undefined;
+
+/**
+ * Troca a senha da conta. Só funciona com a sessão temporária que o link do
+ * e-mail de recuperação cria (via /auth/callback) — sem isso, getUser()
+ * retorna nulo e barramos aqui.
+ */
+export async function redefinirSenhaAction(_prevState: RedefinirSenhaState, formData: FormData): Promise<RedefinirSenhaState> {
+  const senha = String(formData.get("password") || "");
+  const confirmacao = String(formData.get("password_confirm") || "");
+
+  if (senha.length < 6) {
+    return { error: "A senha precisa ter pelo menos 6 caracteres." };
+  }
+  if (senha !== confirmacao) {
+    return { error: "As senhas não coincidem." };
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return { error: "Link expirado ou inválido. Solicite um novo link de recuperação." };
+  }
+
+  const { error } = await supabase.auth.updateUser({ password: senha });
+  if (error) {
+    return { error: "Não foi possível redefinir sua senha agora. Tente novamente." };
+  }
+
+  revalidatePath("/", "layout");
+  redirect("/dashboard?senha_redefinida=1");
 }
 
 export async function signOutAction() {

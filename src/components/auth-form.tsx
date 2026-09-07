@@ -46,7 +46,14 @@ export function AuthForm({ mode, action }: Props) {
         </div>
 
         <div>
-          <Label htmlFor="password">Senha</Label>
+          <div className="flex items-center justify-between">
+            <Label htmlFor="password">Senha</Label>
+            {isLogin && (
+              <Link href="/recuperar-senha" className="mb-1.5 text-xs font-medium text-brand-700 hover:underline">
+                Esqueceu a senha?
+              </Link>
+            )}
+          </div>
           <Input
             id="password"
             name="password"
