@@ -24,18 +24,18 @@ import { PLANOS } from "@/lib/planos";
 const RECURSOS = [
   {
     icone: BookOpenCheck,
-    titulo: "Banco de questões com estatísticas",
-    descricao: "Pratique por matéria, banca e dificuldade, e acompanhe sua evolução em tempo real.",
+    titulo: "Banco de questões",
+    descricao: "Filtre por matéria, banca e dificuldade. Cada resposta entra na sua estatística na mesma hora.",
   },
   {
     icone: Brain,
     titulo: "Flashcards com repetição espaçada",
-    descricao: "Fixe o conteúdo com um algoritmo que revisa o que você mais esquece, no momento certo.",
+    descricao: "O algoritmo SM-2 decide quando cada cartão volta: o que você erra aparece mais, o que já domina some por semanas.",
   },
   {
     icone: CalendarCheck2,
-    titulo: "Cronograma personalizado",
-    descricao: "Um plano de estudos por matéria e tópico, ajustado ao tempo que você tem disponível.",
+    titulo: "Cronograma que cabe na sua semana",
+    descricao: "Plano por matéria e tópico, dividido pelas horas que você realmente tem, não pelas que gostaria de ter.",
   },
 ];
 
@@ -43,26 +43,26 @@ const PASSOS = [
   {
     numero: "01",
     icone: Compass,
-    titulo: "Diga qual concurso você quer",
-    descricao: "Escolha da nossa lista ou cadastre o seu. Em menos de 1 minuto o sistema já sabe o que você precisa estudar.",
+    titulo: "Escolha o concurso",
+    descricao: "Pegue um da nossa lista ou cadastre o edital do seu. Em um minuto o sistema já tem suas matérias e o peso de cada uma.",
   },
   {
     numero: "02",
     icone: ClipboardList,
-    titulo: "Receba um cronograma pronto",
-    descricao: "Com base no tempo que você tem disponível por dia, montamos uma semana de estudos por matéria — editável a qualquer momento.",
+    titulo: "Receba o cronograma",
+    descricao: "Diga quantas horas tem por dia. A semana já vem dividida por matéria, e você reorganiza quando precisar.",
   },
   {
     numero: "03",
     icone: Repeat,
-    titulo: "Treine todo dia com questões e flashcards",
-    descricao: "Pratique questões reais de banca e revise o que você mais esquece, no momento exato em que começaria a esquecer.",
+    titulo: "Treine todos os dias",
+    descricao: "Questões de provas passadas e flashcards que reaparecem pouco antes de você esquecer o assunto.",
   },
   {
     numero: "04",
     icone: LineChart,
-    titulo: "Acompanhe sua evolução",
-    descricao: "Veja sua taxa de acerto por matéria e identifique exatamente onde focar antes da prova — sem achismo.",
+    titulo: "Veja onde você está",
+    descricao: "Taxa de acerto por matéria, atualizada a cada questão. Fica claro o que ainda precisa de trabalho.",
   },
 ];
 
@@ -156,8 +156,8 @@ export default function LandingPage() {
       {/* COMO FUNCIONA */}
       <section id="como-funciona" className="mx-auto max-w-6xl px-6 py-20 sm:py-24">
         <Reveal className="mx-auto max-w-2xl text-center">
-          <h2 className="font-display text-3xl font-semibold text-ink-900">Do zero ao dia da prova, em 4 passos</h2>
-          <p className="mt-3 text-ink-600">Sem planilha, sem post-it, sem perder o fio da meada.</p>
+          <h2 className="font-display text-3xl font-semibold text-ink-900">Do briefing à prova, em quatro passos</h2>
+          <p className="mt-3 text-ink-600">Você diz o que vai prestar. A gente organiza o resto.</p>
         </Reveal>
 
         <div className="mt-14 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
@@ -197,8 +197,8 @@ export default function LandingPage() {
       <section className="border-y border-ink-200 bg-surface py-20 sm:py-24">
         <div className="mx-auto max-w-6xl px-6">
           <Reveal className="mx-auto max-w-2xl text-center">
-            <h2 className="font-display text-3xl font-semibold text-ink-900">Tudo que falta entre estudar e passar</h2>
-            <p className="mt-3 text-ink-600">Três ferramentas que trabalham juntas para transformar teoria em aprovação.</p>
+            <h2 className="font-display text-3xl font-semibold text-ink-900">O que você usa todo dia</h2>
+            <p className="mt-3 text-ink-600">Questões, flashcards e cronograma no mesmo lugar.</p>
           </Reveal>
 
           <div className="mt-12 grid gap-5 sm:grid-cols-3">
