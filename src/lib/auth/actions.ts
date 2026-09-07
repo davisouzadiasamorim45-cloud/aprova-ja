@@ -163,6 +163,53 @@ export async function alterarSenhaAction(_prevState: AlterarSenhaState, formData
   return { sucesso: true };
 }
 
+export type AlterarEmailState = { error?: string; sucesso?: boolean } | undefined;
+
+/**
+ * Troca de e-mail: confirma a senha atual (mesma lógica de reautenticação
+ * do alterarSenhaAction) e dispara o fluxo do Supabase, que por padrão exige
+ * confirmação tanto no e-mail antigo quanto no novo ("secure email change")
+ * antes de efetivar a troca — o e-mail em `user.email` só muda depois disso.
+ */
+export async function alterarEmailAction(_prevState: AlterarEmailState, formData: FormData): Promise<AlterarEmailState> {
+  const senhaAtual = String(formData.get("senha_atual") || "");
+  const novoEmail = String(formData.get("novo_email") || "").trim();
+
+  if (!senhaAtual) {
+    return { error: "Informe sua senha atual." };
+  }
+  if (!novoEmail || !novoEmail.includes("@")) {
+    return { error: "Informe um e-mail válido." };
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user?.email) redirect("/login");
+
+  if (novoEmail.toLowerCase() === user.email.toLowerCase()) {
+    return { error: "Esse já é o seu e-mail atual." };
+  }
+
+  const { error: erroAuth } = await supabase.auth.signInWithPassword({ email: user.email, password: senhaAtual });
+  if (erroAuth) {
+    return { error: "Senha atual incorreta." };
+  }
+
+  const origin = (await headers()).get("origin") ?? process.env.NEXT_PUBLIC_SITE_URL;
+  const { error } = await supabase.auth.updateUser(
+    { email: novoEmail },
+    { emailRedirectTo: `${origin}/auth/callback?next=/dashboard/perfil/seguranca` }
+  );
+
+  if (error) {
+    return { error: error.message.includes("registered") ? "Esse e-mail já está em uso." : "Não foi possível iniciar a troca agora. Tente novamente." };
+  }
+
+  return { sucesso: true };
+}
+
 export async function signOutAction() {
   const supabase = await createClient();
   await supabase.auth.signOut();

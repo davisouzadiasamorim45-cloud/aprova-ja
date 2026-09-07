@@ -1,4 +1,6 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
+import { ChevronRight, ShieldCheck, Wallet } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { signOutAction } from "@/lib/auth/actions";
 import { Card } from "@/components/ui/card";
@@ -6,9 +8,7 @@ import { Button } from "@/components/ui/button";
 import { nomeEstado } from "@/lib/estados";
 import { ConfiguracoesEstudo } from "@/components/configuracoes-estudo";
 import { SeletorTema } from "@/components/seletor-tema";
-import { ExcluirConta } from "@/components/excluir-conta";
 import { AvatarUpload } from "@/components/avatar-upload";
-import { AlterarSenhaForm } from "@/components/alterar-senha-form";
 
 export default async function PerfilPage() {
   const supabase = await createClient();
@@ -54,6 +54,34 @@ export default async function PerfilPage() {
         </div>
       </Card>
 
+      {/* Atalhos pra configurações que viraram página própria — mantém o
+          Perfil enxuto (só identidade + preferência pessoal). */}
+      <div className="mt-6 grid gap-3 sm:grid-cols-2">
+        <Link
+          href="/dashboard/perfil/seguranca"
+          className="flex items-center gap-3 rounded-2xl border border-ink-200 bg-surface p-4 transition-colors hover:border-brand-300 hover:bg-brand-50"
+        >
+          <ShieldCheck className="h-5 w-5 shrink-0 text-ink-500" />
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-medium text-ink-900">Segurança e privacidade</p>
+            <p className="text-xs text-ink-500">Senha, e-mail, termos e exclusão de conta</p>
+          </div>
+          <ChevronRight className="h-4 w-4 shrink-0 text-ink-400" />
+        </Link>
+
+        <Link
+          href="/dashboard/planos"
+          className="flex items-center gap-3 rounded-2xl border border-ink-200 bg-surface p-4 transition-colors hover:border-brand-300 hover:bg-brand-50"
+        >
+          <Wallet className="h-5 w-5 shrink-0 text-ink-500" />
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-medium text-ink-900">Plano e assinatura</p>
+            <p className="text-xs text-ink-500">Upgrade, cobrança e cancelamento</p>
+          </div>
+          <ChevronRight className="h-4 w-4 shrink-0 text-ink-400" />
+        </Link>
+      </div>
+
       <h2 className="mt-8 font-display text-lg font-semibold text-ink-900">Temas</h2>
       <div className="mt-3">
         <SeletorTema />
@@ -64,12 +92,6 @@ export default async function PerfilPage() {
       <div className="mt-3">
         <ConfiguracoesEstudo />
       </div>
-
-      <h2 className="mt-8 font-display text-lg font-semibold text-ink-900">Segurança</h2>
-      <p className="mt-1 text-sm text-ink-500">Troque sua senha sem precisar sair da conta.</p>
-      <Card className="mt-3 p-5">
-        <AlterarSenhaForm />
-      </Card>
 
       {/* Ação terminal, isolada no fim da página — de propósito longe do topo,
           pra não ficar no caminho de quem só veio ajustar tema ou alarme. */}
@@ -84,8 +106,6 @@ export default async function PerfilPage() {
           </Button>
         </form>
       </div>
-
-      <ExcluirConta />
     </div>
   );
 }
