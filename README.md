@@ -38,7 +38,8 @@ cp .env.local.example .env.local
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase > Project Settings > API |
 | `SUPABASE_SERVICE_ROLE_KEY` | Supabase > Project Settings > API (secreta) |
 | `NEXT_PUBLIC_SITE_URL` | URL pública do app (`http://localhost:3000` em dev) |
-| `STRIPE_SECRET_KEY` | Stripe > Developers > API keys |
+| `STRIPE_SECRET_KEY` | Stripe > Developers > API keys (secreta) |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | Stripe > Developers > API keys (publicável — usada no client pra montar o cartão com Stripe Elements) |
 | `STRIPE_WEBHOOK_SECRET` | Stripe > Developers > Webhooks (ao criar o endpoint) |
 | `STRIPE_PRICE_ID_PRO` | Stripe > Product catalog (crie um produto "Pro" com preço recorrente) |
 | `STRIPE_PRICE_ID_PREMIUM` | Stripe > Product catalog (crie um produto "Premium") |

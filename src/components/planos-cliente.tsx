@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Check, Sparkles } from "lucide-react";
 import { cn } from "@/lib/cn";
-import { Button, buttonClass } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/toast";
 import type { PLANOS } from "@/lib/planos";
 
@@ -37,23 +37,6 @@ export function PlanosCliente({
       }
     } catch {
       toast.erro("Erro de conexão", { descricao: "Não deu para falar com o servidor de pagamento. Tente de novo." });
-    } finally {
-      setCarregando(null);
-    }
-  }
-
-  async function gerenciarAssinatura() {
-    setCarregando("portal");
-    try {
-      const res = await fetch("/api/stripe/portal", { method: "POST" });
-      const data = await res.json();
-      if (data.url) {
-        window.location.href = data.url;
-      } else {
-        toast.erro(data.error ?? "Não foi possível abrir o portal de cobrança.");
-      }
-    } catch {
-      toast.erro("Erro de conexão", { descricao: "Não deu para abrir o portal de cobrança. Tente de novo." });
     } finally {
       setCarregando(null);
     }
@@ -93,18 +76,10 @@ export function PlanosCliente({
                 ))}
               </ul>
 
-              {p.id === "free" ? (
+              {ativo ? (
                 <span className="mt-5 rounded-xl bg-ink-100 px-4 py-2.5 text-center text-sm font-semibold text-ink-500">
-                  {ativo ? "Plano atual" : "Plano padrão"}
+                  Plano atual
                 </span>
-              ) : ativo ? (
-                <button
-                  onClick={gerenciarAssinatura}
-                  disabled={carregando === "portal"}
-                  className={buttonClass("outline", "md", "mt-5")}
-                >
-                  {carregando === "portal" ? "Abrindo..." : "Gerenciar assinatura"}
-                </button>
               ) : (
                 <Button
                   onClick={() => assinar(p.id as "pro" | "premium")}
