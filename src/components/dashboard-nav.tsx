@@ -23,7 +23,7 @@ export const NAV_ITEMS = [
   { href: "/dashboard/flashcards", label: "Flashcards", icon: Layers },
   { href: "/dashboard/estatisticas", label: "Estatísticas", icon: ChartColumn },
   { href: "/dashboard/concursos", label: "Concursos", icon: GraduationCap },
-  { href: "/dashboard/planos", label: "Plano e assinatura", icon: Wallet },
+  { href: "/dashboard/planos", label: "Planos", icon: Wallet },
 ];
 
 // No menu inferior (mobile) só cabem 4 atalhos + "Mais"; o restante fica no sheet.
