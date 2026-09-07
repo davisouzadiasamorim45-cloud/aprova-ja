@@ -11,10 +11,13 @@ export default async function OnboardingPage() {
 
   if (!user) redirect("/login");
 
-  const { data: concursos } = await supabase
-    .from("concursos")
-    .select("id, nome, orgao, nivel")
-    .order("nome");
+  const { data: profile } = await supabase.from("profiles").select("estado").eq("id", user.id).maybeSingle();
+  const estado = profile?.estado ?? null;
+
+  // Mostra concursos nacionais (estado nulo) + os do estado da pessoa, quando conhecido.
+  let query = supabase.from("concursos").select("id, nome, orgao, nivel, estado").order("nome");
+  query = estado ? query.or(`estado.is.null,estado.eq.${estado}`) : query;
+  const { data: concursos } = await query;
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background bg-grain px-4 py-10">

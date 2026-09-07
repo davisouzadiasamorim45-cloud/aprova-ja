@@ -5,7 +5,8 @@ import Link from "next/link";
 import { AlertCircle } from "lucide-react";
 import type { AuthState } from "@/lib/auth/actions";
 import { Button } from "@/components/ui/button";
-import { Input, Label } from "@/components/ui/field";
+import { Input, Label, Select } from "@/components/ui/field";
+import { ESTADOS } from "@/lib/estados";
 
 type Props = {
   mode: "login" | "cadastro";
@@ -50,6 +51,23 @@ export function AuthForm({ mode, action }: Props) {
             placeholder="••••••••"
           />
         </div>
+
+        {!isLogin && (
+          <div>
+            <Label htmlFor="estado">Seu estado</Label>
+            <Select id="estado" name="estado" required defaultValue="" autoComplete="address-level1">
+              <option value="" disabled>
+                Selecione...
+              </option>
+              {ESTADOS.map((e) => (
+                <option key={e.uf} value={e.uf}>
+                  {e.nome}
+                </option>
+              ))}
+            </Select>
+            <p className="mt-1.5 text-xs text-ink-400">Usamos isso pra te mostrar concursos estaduais do seu estado, além dos nacionais.</p>
+          </div>
+        )}
 
         {state?.error && (
           <p className="flex items-start gap-2 rounded-xl bg-red-50 px-3.5 py-2.5 text-sm text-red-700">

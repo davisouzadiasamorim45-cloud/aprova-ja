@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Select } from "@/components/ui/field";
 
-type Concurso = { id: string; nome: string; orgao: string | null; nivel: string | null };
+type Concurso = { id: string; nome: string; orgao: string | null; nivel: string | null; estado?: string | null };
 
 const NOVO = "__novo__";
 const AINDA_NAO_SEI = "__nao_sei__";
@@ -110,7 +110,7 @@ export function OnboardingForm({ concursos }: { concursos: Concurso[] }) {
         <Select value={concursoId} onChange={(e) => setConcursoId(e.target.value)}>
           {concursos.map((c) => (
             <option key={c.id} value={c.id}>
-              {c.nome} {c.orgao ? `· ${c.orgao}` : ""}
+              {c.nome} {c.orgao ? `· ${c.orgao}` : ""} · {c.estado ? c.estado : "Nacional"}
             </option>
           ))}
           <option value={NOVO}>Outro concurso (vou digitar)</option>

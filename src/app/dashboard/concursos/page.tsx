@@ -7,9 +7,10 @@ export default async function ConcursosPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const [{ data: concursos }, { data: minhasMetas }] = await Promise.all([
-    supabase.from("concursos").select("id, nome, orgao, banca, ano, nivel, status").order("created_at", { ascending: false }),
+  const [{ data: concursos }, { data: minhasMetas }, { data: profile }] = await Promise.all([
+    supabase.from("concursos").select("id, nome, orgao, banca, ano, nivel, status, estado").order("created_at", { ascending: false }),
     supabase.from("metas_concurso").select("concurso_id").eq("user_id", user!.id),
+    supabase.from("profiles").select("estado").eq("id", user!.id).maybeSingle(),
   ]);
 
   const idsSeguidos = new Set((minhasMetas ?? []).map((m) => m.concurso_id));
@@ -20,7 +21,7 @@ export default async function ConcursosPage() {
       <p className="mt-1 text-sm text-ink-500">Escolha um concurso do catálogo ou cadastre um novo para acompanhar.</p>
 
       <div className="mt-6">
-        <CatalogoConcursos concursos={concursos ?? []} idsSeguidos={idsSeguidos} />
+        <CatalogoConcursos concursos={concursos ?? []} idsSeguidos={idsSeguidos} estadoUsuario={profile?.estado ?? null} />
       </div>
     </div>
   );

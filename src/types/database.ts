@@ -1,211 +1,787 @@
-// Tipos do banco de dados, escritos à mão a partir das migrations em
-// supabase/migrations/. Quando o projeto Supabase estiver criado, prefira
-// gerar este arquivo automaticamente com:
-//   npx supabase gen types typescript --project-id <id> > src/types/database.ts
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
 
-export type Plano = "free" | "pro" | "premium";
-export type NivelConcurso = "fundamental" | "medio" | "superior";
-export type StatusConcurso = "previsto" | "edital_publicado" | "inscricoes_abertas" | "encerrado";
-export type StatusTopico = "nao_iniciado" | "estudando" | "revisando" | "concluido";
-export type TipoQuestao = "multipla_escolha" | "certo_errado";
-export type Dificuldade = "facil" | "media" | "dificil";
-export type StatusAssinatura = "inactive" | "trialing" | "active" | "past_due" | "canceled";
-
-export interface Database {
+export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.5"
+  }
   public: {
     Tables: {
-      profiles: {
-        Row: {
-          id: string;
-          full_name: string | null;
-          avatar_url: string | null;
-          plan: Plano;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: Partial<Database["public"]["Tables"]["profiles"]["Row"]> & { id: string };
-        Update: Partial<Database["public"]["Tables"]["profiles"]["Row"]>;
-        Relationships: [];
-      };
-      concursos: {
-        Row: {
-          id: string;
-          nome: string;
-          orgao: string | null;
-          banca: string | null;
-          ano: number | null;
-          nivel: NivelConcurso | null;
-          status: StatusConcurso;
-          descricao: string | null;
-          created_by: string | null;
-          created_at: string;
-        };
-        Insert: Partial<Database["public"]["Tables"]["concursos"]["Row"]>;
-        Update: Partial<Database["public"]["Tables"]["concursos"]["Row"]>;
-        Relationships: [];
-      };
-      materias: {
-        Row: { id: string; concurso_id: string; nome: string; ordem: number; created_at: string };
-        Insert: Partial<Database["public"]["Tables"]["materias"]["Row"]>;
-        Update: Partial<Database["public"]["Tables"]["materias"]["Row"]>;
-        Relationships: [];
-      };
-      topicos: {
-        Row: { id: string; materia_id: string; nome: string; ordem: number; created_at: string };
-        Insert: Partial<Database["public"]["Tables"]["topicos"]["Row"]>;
-        Update: Partial<Database["public"]["Tables"]["topicos"]["Row"]>;
-        Relationships: [];
-      };
-      progresso_edital: {
-        Row: {
-          id: string;
-          user_id: string;
-          topico_id: string;
-          status: StatusTopico;
-          updated_at: string;
-        };
-        Insert: Partial<Database["public"]["Tables"]["progresso_edital"]["Row"]>;
-        Update: Partial<Database["public"]["Tables"]["progresso_edital"]["Row"]>;
-        Relationships: [];
-      };
-      questoes: {
-        Row: {
-          id: string;
-          concurso_id: string | null;
-          materia_id: string | null;
-          topico_id: string | null;
-          banca: string | null;
-          ano: number | null;
-          enunciado: string;
-          tipo: TipoQuestao;
-          dificuldade: Dificuldade;
-          explicacao: string | null;
-          created_by: string | null;
-          created_at: string;
-        };
-        Insert: Partial<Database["public"]["Tables"]["questoes"]["Row"]>;
-        Update: Partial<Database["public"]["Tables"]["questoes"]["Row"]>;
-        Relationships: [];
-      };
       alternativas: {
         Row: {
-          id: string;
-          questao_id: string;
-          letra: string;
-          texto: string;
-          correta: boolean;
-          ordem: number;
-        };
-        Insert: Partial<Database["public"]["Tables"]["alternativas"]["Row"]>;
-        Update: Partial<Database["public"]["Tables"]["alternativas"]["Row"]>;
-        Relationships: [];
-      };
-      tentativas: {
-        Row: {
-          id: string;
-          user_id: string;
-          questao_id: string;
-          alternativa_id: string | null;
-          correta: boolean;
-          tempo_resposta_segundos: number | null;
-          created_at: string;
-        };
-        Insert: Partial<Database["public"]["Tables"]["tentativas"]["Row"]>;
-        Update: Partial<Database["public"]["Tables"]["tentativas"]["Row"]>;
-        Relationships: [];
-      };
-      metas_concurso: {
-        Row: {
-          id: string;
-          user_id: string;
-          concurso_id: string;
-          data_prova: string | null;
-          horas_semanais_meta: number;
-          created_at: string;
-        };
-        Insert: Partial<Database["public"]["Tables"]["metas_concurso"]["Row"]>;
-        Update: Partial<Database["public"]["Tables"]["metas_concurso"]["Row"]>;
-        Relationships: [];
-      };
-      cronograma_itens: {
-        Row: {
-          id: string;
-          user_id: string;
-          concurso_id: string | null;
-          materia_id: string | null;
-          topico_id: string | null;
-          titulo: string;
-          dia_semana: number | null;
-          data: string | null;
-          duracao_minutos: number;
-          concluido: boolean;
-          created_at: string;
-        };
-        Insert: Partial<Database["public"]["Tables"]["cronograma_itens"]["Row"]>;
-        Update: Partial<Database["public"]["Tables"]["cronograma_itens"]["Row"]>;
-        Relationships: [];
-      };
-      baralhos: {
-        Row: {
-          id: string;
-          user_id: string;
-          concurso_id: string | null;
-          nome: string;
-          created_at: string;
-        };
-        Insert: Partial<Database["public"]["Tables"]["baralhos"]["Row"]>;
-        Update: Partial<Database["public"]["Tables"]["baralhos"]["Row"]>;
-        Relationships: [];
-      };
-      flashcards: {
-        Row: {
-          id: string;
-          baralho_id: string;
-          user_id: string;
-          frente: string;
-          verso: string;
-          intervalo_dias: number;
-          fator_facilidade: number;
-          repeticoes: number;
-          proxima_revisao: string;
-          created_at: string;
-        };
-        Insert: Partial<Database["public"]["Tables"]["flashcards"]["Row"]>;
-        Update: Partial<Database["public"]["Tables"]["flashcards"]["Row"]>;
-        Relationships: [];
-      };
-      flashcard_revisoes: {
-        Row: {
-          id: string;
-          flashcard_id: string;
-          user_id: string;
-          qualidade: number;
-          created_at: string;
-        };
-        Insert: Partial<Database["public"]["Tables"]["flashcard_revisoes"]["Row"]>;
-        Update: Partial<Database["public"]["Tables"]["flashcard_revisoes"]["Row"]>;
-        Relationships: [];
-      };
+          correta: boolean
+          id: string
+          letra: string
+          ordem: number
+          questao_id: string
+          texto: string
+        }
+        Insert: {
+          correta?: boolean
+          id?: string
+          letra: string
+          ordem?: number
+          questao_id: string
+          texto: string
+        }
+        Update: {
+          correta?: boolean
+          id?: string
+          letra?: string
+          ordem?: number
+          questao_id?: string
+          texto?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alternativas_questao_id_fkey"
+            columns: ["questao_id"]
+            isOneToOne: false
+            referencedRelation: "questoes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       assinaturas: {
         Row: {
-          id: string;
-          user_id: string;
-          stripe_customer_id: string | null;
-          stripe_subscription_id: string | null;
-          plano: Plano;
-          status: StatusAssinatura;
-          periodo_atual_fim: string | null;
-          created_at: string;
-          updated_at: string;
-        };
-        Insert: Partial<Database["public"]["Tables"]["assinaturas"]["Row"]>;
-        Update: Partial<Database["public"]["Tables"]["assinaturas"]["Row"]>;
-        Relationships: [];
-      };
-    };
-    Views: Record<string, never>;
-    Functions: Record<string, never>;
-    Enums: Record<string, never>;
-    CompositeTypes: Record<string, never>;
-  };
+          created_at: string
+          id: string
+          periodo_atual_fim: string | null
+          plano: string
+          status: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          periodo_atual_fim?: string | null
+          plano?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          periodo_atual_fim?: string | null
+          plano?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assinaturas_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      baralhos: {
+        Row: {
+          concurso_id: string | null
+          created_at: string
+          id: string
+          nome: string
+          user_id: string
+        }
+        Insert: {
+          concurso_id?: string | null
+          created_at?: string
+          id?: string
+          nome: string
+          user_id: string
+        }
+        Update: {
+          concurso_id?: string | null
+          created_at?: string
+          id?: string
+          nome?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "baralhos_concurso_id_fkey"
+            columns: ["concurso_id"]
+            isOneToOne: false
+            referencedRelation: "concursos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "baralhos_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      concursos: {
+        Row: {
+          ano: number | null
+          banca: string | null
+          created_at: string
+          created_by: string | null
+          descricao: string | null
+          estado: string | null
+          id: string
+          nivel: string | null
+          nome: string
+          orgao: string | null
+          status: string
+        }
+        Insert: {
+          ano?: number | null
+          banca?: string | null
+          created_at?: string
+          created_by?: string | null
+          descricao?: string | null
+          estado?: string | null
+          id?: string
+          nivel?: string | null
+          nome: string
+          orgao?: string | null
+          status?: string
+        }
+        Update: {
+          ano?: number | null
+          banca?: string | null
+          created_at?: string
+          created_by?: string | null
+          descricao?: string | null
+          estado?: string | null
+          id?: string
+          nivel?: string | null
+          nome?: string
+          orgao?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "concursos_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cronograma_itens: {
+        Row: {
+          concluido: boolean
+          concurso_id: string | null
+          created_at: string
+          data: string | null
+          dia_semana: number | null
+          duracao_minutos: number
+          id: string
+          materia_id: string | null
+          titulo: string
+          topico_id: string | null
+          user_id: string
+        }
+        Insert: {
+          concluido?: boolean
+          concurso_id?: string | null
+          created_at?: string
+          data?: string | null
+          dia_semana?: number | null
+          duracao_minutos?: number
+          id?: string
+          materia_id?: string | null
+          titulo: string
+          topico_id?: string | null
+          user_id: string
+        }
+        Update: {
+          concluido?: boolean
+          concurso_id?: string | null
+          created_at?: string
+          data?: string | null
+          dia_semana?: number | null
+          duracao_minutos?: number
+          id?: string
+          materia_id?: string | null
+          titulo?: string
+          topico_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cronograma_itens_concurso_id_fkey"
+            columns: ["concurso_id"]
+            isOneToOne: false
+            referencedRelation: "concursos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cronograma_itens_materia_id_fkey"
+            columns: ["materia_id"]
+            isOneToOne: false
+            referencedRelation: "materias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cronograma_itens_topico_id_fkey"
+            columns: ["topico_id"]
+            isOneToOne: false
+            referencedRelation: "topicos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cronograma_itens_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      flashcard_revisoes: {
+        Row: {
+          created_at: string
+          flashcard_id: string
+          id: string
+          qualidade: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          flashcard_id: string
+          id?: string
+          qualidade: number
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          flashcard_id?: string
+          id?: string
+          qualidade?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flashcard_revisoes_flashcard_id_fkey"
+            columns: ["flashcard_id"]
+            isOneToOne: false
+            referencedRelation: "flashcards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "flashcard_revisoes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      flashcards: {
+        Row: {
+          baralho_id: string
+          created_at: string
+          fator_facilidade: number
+          frente: string
+          id: string
+          intervalo_dias: number
+          proxima_revisao: string
+          repeticoes: number
+          user_id: string
+          verso: string
+        }
+        Insert: {
+          baralho_id: string
+          created_at?: string
+          fator_facilidade?: number
+          frente: string
+          id?: string
+          intervalo_dias?: number
+          proxima_revisao?: string
+          repeticoes?: number
+          user_id: string
+          verso: string
+        }
+        Update: {
+          baralho_id?: string
+          created_at?: string
+          fator_facilidade?: number
+          frente?: string
+          id?: string
+          intervalo_dias?: number
+          proxima_revisao?: string
+          repeticoes?: number
+          user_id?: string
+          verso?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flashcards_baralho_id_fkey"
+            columns: ["baralho_id"]
+            isOneToOne: false
+            referencedRelation: "baralhos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "flashcards_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      materias: {
+        Row: {
+          concurso_id: string
+          created_at: string
+          id: string
+          nome: string
+          ordem: number
+        }
+        Insert: {
+          concurso_id: string
+          created_at?: string
+          id?: string
+          nome: string
+          ordem?: number
+        }
+        Update: {
+          concurso_id?: string
+          created_at?: string
+          id?: string
+          nome?: string
+          ordem?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "materias_concurso_id_fkey"
+            columns: ["concurso_id"]
+            isOneToOne: false
+            referencedRelation: "concursos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      metas_concurso: {
+        Row: {
+          concurso_id: string
+          created_at: string
+          data_prova: string | null
+          horas_semanais_meta: number | null
+          id: string
+          user_id: string
+        }
+        Insert: {
+          concurso_id: string
+          created_at?: string
+          data_prova?: string | null
+          horas_semanais_meta?: number | null
+          id?: string
+          user_id: string
+        }
+        Update: {
+          concurso_id?: string
+          created_at?: string
+          data_prova?: string | null
+          horas_semanais_meta?: number | null
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "metas_concurso_concurso_id_fkey"
+            columns: ["concurso_id"]
+            isOneToOne: false
+            referencedRelation: "concursos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "metas_concurso_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          estado: string | null
+          full_name: string | null
+          id: string
+          plan: string
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          estado?: string | null
+          full_name?: string | null
+          id: string
+          plan?: string
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          estado?: string | null
+          full_name?: string | null
+          id?: string
+          plan?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      progresso_edital: {
+        Row: {
+          id: string
+          status: string
+          topico_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          status?: string
+          topico_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          status?: string
+          topico_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "progresso_edital_topico_id_fkey"
+            columns: ["topico_id"]
+            isOneToOne: false
+            referencedRelation: "topicos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "progresso_edital_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      questoes: {
+        Row: {
+          ano: number | null
+          banca: string | null
+          concurso_id: string | null
+          created_at: string
+          created_by: string | null
+          dificuldade: string
+          enunciado: string
+          explicacao: string | null
+          id: string
+          materia_id: string | null
+          tipo: string
+          topico_id: string | null
+        }
+        Insert: {
+          ano?: number | null
+          banca?: string | null
+          concurso_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          dificuldade?: string
+          enunciado: string
+          explicacao?: string | null
+          id?: string
+          materia_id?: string | null
+          tipo?: string
+          topico_id?: string | null
+        }
+        Update: {
+          ano?: number | null
+          banca?: string | null
+          concurso_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          dificuldade?: string
+          enunciado?: string
+          explicacao?: string | null
+          id?: string
+          materia_id?: string | null
+          tipo?: string
+          topico_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "questoes_concurso_id_fkey"
+            columns: ["concurso_id"]
+            isOneToOne: false
+            referencedRelation: "concursos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "questoes_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "questoes_materia_id_fkey"
+            columns: ["materia_id"]
+            isOneToOne: false
+            referencedRelation: "materias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "questoes_topico_id_fkey"
+            columns: ["topico_id"]
+            isOneToOne: false
+            referencedRelation: "topicos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tentativas: {
+        Row: {
+          alternativa_id: string | null
+          correta: boolean
+          created_at: string
+          id: string
+          questao_id: string
+          tempo_resposta_segundos: number | null
+          user_id: string
+        }
+        Insert: {
+          alternativa_id?: string | null
+          correta: boolean
+          created_at?: string
+          id?: string
+          questao_id: string
+          tempo_resposta_segundos?: number | null
+          user_id: string
+        }
+        Update: {
+          alternativa_id?: string | null
+          correta?: boolean
+          created_at?: string
+          id?: string
+          questao_id?: string
+          tempo_resposta_segundos?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tentativas_alternativa_id_fkey"
+            columns: ["alternativa_id"]
+            isOneToOne: false
+            referencedRelation: "alternativas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tentativas_questao_id_fkey"
+            columns: ["questao_id"]
+            isOneToOne: false
+            referencedRelation: "questoes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tentativas_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      topicos: {
+        Row: {
+          created_at: string
+          id: string
+          materia_id: string
+          nome: string
+          ordem: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          materia_id: string
+          nome: string
+          ordem?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          materia_id?: string
+          nome?: string
+          ordem?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "topicos_materia_id_fkey"
+            columns: ["materia_id"]
+            isOneToOne: false
+            referencedRelation: "materias"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      [_ in never]: never
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
 }
+
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never) = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never) = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends (DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never) = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends (DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never) = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends (PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never) = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
+
+export const Constants = {
+  public: {
+    Enums: {},
+  },
+} as const

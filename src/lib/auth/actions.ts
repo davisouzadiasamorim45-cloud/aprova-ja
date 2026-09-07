@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { ESTADOS } from "@/lib/estados";
 
 export type AuthState = { error?: string } | undefined;
 
@@ -29,19 +30,23 @@ export async function signUpAction(_prevState: AuthState, formData: FormData): P
   const fullName = String(formData.get("full_name") || "").trim();
   const email = String(formData.get("email") || "").trim();
   const password = String(formData.get("password") || "");
+  const estado = String(formData.get("estado") || "").trim().toUpperCase();
 
-  if (!fullName || !email || !password) {
+  if (!fullName || !email || !password || !estado) {
     return { error: "Preencha todos os campos." };
   }
   if (password.length < 6) {
     return { error: "A senha precisa ter pelo menos 6 caracteres." };
+  }
+  if (!ESTADOS.some((e) => e.uf === estado)) {
+    return { error: "Selecione um estado válido." };
   }
 
   const supabase = await createClient();
   const { error } = await supabase.auth.signUp({
     email,
     password,
-    options: { data: { full_name: fullName } },
+    options: { data: { full_name: fullName, estado } },
   });
 
   if (error) {
