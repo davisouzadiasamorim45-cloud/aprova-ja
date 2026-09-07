@@ -120,6 +120,49 @@ export async function redefinirSenhaAction(_prevState: RedefinirSenhaState, form
   redirect("/dashboard?senha_redefinida=1");
 }
 
+export type AlterarSenhaState = { error?: string; sucesso?: boolean } | undefined;
+
+/**
+ * Troca de senha pra quem já está logado (diferente do fluxo de
+ * recuperação, que é pra quem esqueceu e está deslogado). Confirma a senha
+ * atual reautenticando com signInWithPassword antes de trocar — o Supabase
+ * não tem um "verificar senha" direto, então é assim que se garante que
+ * quem está mexendo na sessão sabe a senha de verdade, não só tem a aba aberta.
+ */
+export async function alterarSenhaAction(_prevState: AlterarSenhaState, formData: FormData): Promise<AlterarSenhaState> {
+  const senhaAtual = String(formData.get("senha_atual") || "");
+  const novaSenha = String(formData.get("nova_senha") || "");
+  const confirmacao = String(formData.get("nova_senha_confirm") || "");
+
+  if (!senhaAtual) {
+    return { error: "Informe sua senha atual." };
+  }
+  if (novaSenha.length < 6) {
+    return { error: "A nova senha precisa ter pelo menos 6 caracteres." };
+  }
+  if (novaSenha !== confirmacao) {
+    return { error: "As senhas não coincidem." };
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user?.email) redirect("/login");
+
+  const { error: erroAuth } = await supabase.auth.signInWithPassword({ email: user.email, password: senhaAtual });
+  if (erroAuth) {
+    return { error: "Senha atual incorreta." };
+  }
+
+  const { error } = await supabase.auth.updateUser({ password: novaSenha });
+  if (error) {
+    return { error: "Não foi possível trocar sua senha agora. Tente novamente." };
+  }
+
+  return { sucesso: true };
+}
+
 export async function signOutAction() {
   const supabase = await createClient();
   await supabase.auth.signOut();

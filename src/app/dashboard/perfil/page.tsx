@@ -8,6 +8,7 @@ import { ConfiguracoesEstudo } from "@/components/configuracoes-estudo";
 import { SeletorTema } from "@/components/seletor-tema";
 import { ExcluirConta } from "@/components/excluir-conta";
 import { AvatarUpload } from "@/components/avatar-upload";
+import { AlterarSenhaForm } from "@/components/alterar-senha-form";
 
 export default async function PerfilPage() {
   const supabase = await createClient();
@@ -63,6 +64,12 @@ export default async function PerfilPage() {
       <div className="mt-3">
         <ConfiguracoesEstudo />
       </div>
+
+      <h2 className="mt-8 font-display text-lg font-semibold text-ink-900">Segurança</h2>
+      <p className="mt-1 text-sm text-ink-500">Troque sua senha sem precisar sair da conta.</p>
+      <Card className="mt-3 p-5">
+        <AlterarSenhaForm />
+      </Card>
 
       {/* Ação terminal, isolada no fim da página — de propósito longe do topo,
           pra não ficar no caminho de quem só veio ajustar tema ou alarme. */}
