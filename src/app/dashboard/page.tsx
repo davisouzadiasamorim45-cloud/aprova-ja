@@ -3,6 +3,7 @@ import { ArrowRight, CalendarClock, LayoutGrid, Layers, Target, TrendingUp } fro
 import { createClient } from "@/lib/supabase/server";
 import { Card, cardLinkClass } from "@/components/ui/card";
 import { buttonClass } from "@/components/ui/button";
+import { CardRevisarDashboard } from "@/components/card-revisar-dashboard";
 
 function diasRestantes(dataProva: string | null) {
   if (!dataProva) return null;
@@ -98,14 +99,7 @@ export default async function DashboardPage() {
       )}
 
       <div className="mt-6 grid gap-4 sm:grid-cols-3">
-        <Link href="/dashboard/flashcards/revisar" className={`${cardLinkClass} flex flex-col p-5`}>
-          <Layers className="h-5 w-5 text-brand-600" strokeWidth={1.9} />
-          <p className="mt-3 text-sm text-ink-500">Flashcards para revisar hoje</p>
-          <p className="mt-1 font-display text-3xl font-semibold text-ink-900">{flashcardsPendentes ?? 0}</p>
-          <span className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-brand-700">
-            Revisar agora <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-          </span>
-        </Link>
+        <CardRevisarDashboard pendentes={flashcardsPendentes ?? 0} />
         <Link href="/dashboard/estatisticas" className={`${cardLinkClass} flex flex-col p-5`}>
           <TrendingUp className="h-5 w-5 text-brand-600" strokeWidth={1.9} />
           <p className="mt-3 text-sm text-ink-500">Taxa de acerto geral</p>

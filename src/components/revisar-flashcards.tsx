@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { PartyPopper, RotateCcw } from "lucide-react";
+import Link from "next/link";
+import { ArrowLeft, PartyPopper, RotateCcw } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { calcularProximaRevisao } from "@/lib/spaced-repetition/sm2";
 import { cn } from "@/lib/cn";
@@ -69,6 +70,12 @@ export function RevisarFlashcards({ cardsIniciais }: { cardsIniciais: Flashcard[
       <Card className="p-10 text-center">
         <PartyPopper className="mx-auto h-8 w-8 text-gold-500" strokeWidth={1.75} />
         <p className="mt-3 text-ink-600">Nenhum cartão pendente para revisão hoje.</p>
+        <Link
+          href="/dashboard/flashcards"
+          className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-brand-700 hover:text-brand-800"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" /> Voltar aos flashcards
+        </Link>
       </Card>
     );
   }

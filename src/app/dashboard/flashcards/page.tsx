@@ -1,9 +1,7 @@
-import Link from "next/link";
-import { Layers } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Baralhos } from "@/components/baralhos";
 import { GerarFlashcardsErros } from "@/components/gerar-flashcards-erros";
-import { buttonClass } from "@/components/ui/button";
+import { RevisarHojeBotao } from "@/components/revisar-hoje-botao";
 
 export default async function FlashcardsPage() {
   const supabase = await createClient();
@@ -31,9 +29,7 @@ export default async function FlashcardsPage() {
         </div>
         <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-start">
           <GerarFlashcardsErros />
-          <Link href="/dashboard/flashcards/revisar" className={buttonClass("primary", "md", "gap-2")}>
-            <Layers className="h-4 w-4" /> Revisar hoje ({pendentes ?? 0})
-          </Link>
+          <RevisarHojeBotao pendentes={pendentes ?? 0} />
         </div>
       </div>
 
