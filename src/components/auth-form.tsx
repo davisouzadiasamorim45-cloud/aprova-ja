@@ -25,11 +25,11 @@ export function AuthForm({ mode, action }: Props) {
 
   return (
     <div>
-      <h1 className="font-display text-xl font-semibold text-ink-900">
-        {isLogin ? "Entrar na sua conta" : "Criar sua conta grátis"}
+      <h1 className="font-display text-2xl font-semibold text-ink-900">
+        {isLogin ? "Bem-vindo de volta" : "Criar sua conta grátis"}
       </h1>
-      <p className="mt-1 text-sm text-ink-500">
-        {isLogin ? "Continue de onde parou." : "Leva menos de um minuto."}
+      <p className="mt-1.5 text-sm text-ink-500">
+        {isLogin ? "Entre pra continuar de onde parou." : "Leva menos de um minuto."}
       </p>
 
       <form action={formAction} className="mt-6 flex flex-col gap-4">
@@ -46,14 +46,7 @@ export function AuthForm({ mode, action }: Props) {
         </div>
 
         <div>
-          <div className="flex items-center justify-between">
-            <Label htmlFor="password">Senha</Label>
-            {isLogin && (
-              <Link href="/recuperar-senha" className="mb-1.5 text-xs font-medium text-brand-700 hover:underline">
-                Esqueceu a senha?
-              </Link>
-            )}
-          </div>
+          <Label htmlFor="password">Senha</Label>
           <Input
             id="password"
             name="password"
@@ -63,6 +56,13 @@ export function AuthForm({ mode, action }: Props) {
             autoComplete={isLogin ? "current-password" : "new-password"}
             placeholder="••••••••"
           />
+          {isLogin && (
+            <div className="mt-1.5 text-right">
+              <Link href="/recuperar-senha" className="text-xs font-medium text-brand-700 hover:underline">
+                Esqueceu a senha?
+              </Link>
+            </div>
+          )}
         </div>
 
         {!isLogin && (
