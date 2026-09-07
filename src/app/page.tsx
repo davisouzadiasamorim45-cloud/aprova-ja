@@ -296,7 +296,7 @@ export default function LandingPage() {
       {/* CTA FINAL */}
       <section className="overflow-hidden border-t border-ink-200 bg-surface py-20 sm:py-24">
         <Reveal className="mx-auto max-w-6xl px-6">
-          <div className="relative overflow-hidden rounded-3xl border border-brand-200 bg-gradient-to-br from-brand-50 via-white to-gold-50 shadow-soft-lg">
+          <div className="relative overflow-hidden rounded-3xl border border-brand-200 bg-gradient-to-br from-brand-50 via-surface to-gold-50 shadow-soft-lg">
             <div className="grid items-center gap-10 px-8 py-14 sm:px-12 lg:grid-cols-2 lg:py-0">
               <div className="text-center lg:text-left">
                 <h2 className="font-display text-2xl font-semibold text-ink-900 sm:text-3xl">Pronto para treinar com método?</h2>
@@ -375,7 +375,21 @@ export default function LandingPage() {
 
           <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-ink-200 pt-6 text-xs text-ink-400 sm:flex-row">
             <p>© {new Date().getFullYear()} aprova já. Feito para quem estuda de verdade.</p>
-            <p>Plataforma de estudos para concursos públicos.</p>
+            <p className="flex flex-wrap items-center justify-center gap-x-1.5 gap-y-1">
+              <span>Plataforma de estudos para concursos públicos.</span>
+              <span aria-hidden>·</span>
+              <span className="text-ink-500">
+                Desenvolvido por{" "}
+                <a
+                  href="https://noxi-virid.vercel.app/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-semibold text-brand-700 underline decoration-brand-700/40 underline-offset-2 transition hover:decoration-brand-700"
+                >
+                  Noxi
+                </a>
+              </span>
+            </p>
           </div>
         </div>
       </footer>
