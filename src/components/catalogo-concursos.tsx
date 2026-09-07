@@ -6,9 +6,9 @@ import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/cn";
 import { Card, CardForm } from "@/components/ui/card";
 import { Button, buttonClass } from "@/components/ui/button";
-import { Input } from "@/components/ui/field";
+import { Input, Select } from "@/components/ui/field";
 import { Badge } from "@/components/ui/badge";
-import { nomeEstado } from "@/lib/estados";
+import { ESTADOS, nomeEstado } from "@/lib/estados";
 
 type Concurso = {
   id: string;
@@ -43,13 +43,20 @@ export function CatalogoConcursos({
   const [nome, setNome] = useState("");
   const [orgao, setOrgao] = useState("");
   const [banca, setBanca] = useState("");
+  const [estado, setEstado] = useState("");
   const [salvando, setSalvando] = useState(false);
   const [somenteMeuEstado, setSomenteMeuEstado] = useState(Boolean(estadoUsuario));
 
-  const concursosFiltrados =
-    somenteMeuEstado && estadoUsuario
-      ? concursos.filter((c) => !c.estado || c.estado === estadoUsuario)
-      : concursos;
+  const concursosFiltrados = useMemo(
+    () =>
+      somenteMeuEstado && estadoUsuario
+        ? // Nacionais + estado do usuário — mas nunca esconde um concurso que a
+          // pessoa já segue, mesmo que seja de outro estado (senão ele "some"
+          // da lista sempre que o filtro volta a ligar por padrão).
+          concursos.filter((c) => !c.estado || c.estado === estadoUsuario || seguindo.has(c.id))
+        : concursos,
+    [concursos, somenteMeuEstado, estadoUsuario, seguindo]
+  );
 
   async function seguir(concursoId: string) {
     const {
@@ -78,6 +85,7 @@ export function CatalogoConcursos({
       nome: nome.trim(),
       orgao: orgao.trim() || null,
       banca: banca.trim() || null,
+      estado: estado || null,
       status: "previsto",
       created_by: user.id,
     });
@@ -86,6 +94,7 @@ export function CatalogoConcursos({
       setNome("");
       setOrgao("");
       setBanca("");
+      setEstado("");
       setMostrarForm(false);
       window.location.reload();
     }
@@ -128,7 +137,15 @@ export function CatalogoConcursos({
           <Input value={nome} onChange={(e) => setNome(e.target.value)} placeholder="Nome do concurso" className="sm:col-span-3" />
           <Input value={orgao} onChange={(e) => setOrgao(e.target.value)} placeholder="Órgão (opcional)" />
           <Input value={banca} onChange={(e) => setBanca(e.target.value)} placeholder="Banca (opcional)" />
-          <Button type="submit" disabled={salvando}>
+          <Select value={estado} onChange={(e) => setEstado(e.target.value)}>
+            <option value="">Nacional</option>
+            {ESTADOS.map((e) => (
+              <option key={e.uf} value={e.uf}>
+                {e.nome}
+              </option>
+            ))}
+          </Select>
+          <Button type="submit" disabled={salvando} className="sm:col-span-3">
             Salvar
           </Button>
         </CardForm>

@@ -6,18 +6,30 @@ import { AlertCircle } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Select } from "@/components/ui/field";
+import { ESTADOS, nomeEstado } from "@/lib/estados";
+import { cn } from "@/lib/cn";
 
 type Concurso = { id: string; nome: string; orgao: string | null; nivel: string | null; estado?: string | null };
 
 const NOVO = "__novo__";
 const AINDA_NAO_SEI = "__nao_sei__";
 
-export function OnboardingForm({ concursos }: { concursos: Concurso[] }) {
+export function OnboardingForm({ concursos, estadoUsuario }: { concursos: Concurso[]; estadoUsuario: string | null }) {
   const supabase = useMemo(() => createClient(), []);
   const router = useRouter();
 
-  const [concursoId, setConcursoId] = useState<string>(concursos[0]?.id ?? NOVO);
+  const [somenteMeuEstado, setSomenteMeuEstado] = useState(Boolean(estadoUsuario));
+  const concursosFiltrados = useMemo(
+    () =>
+      somenteMeuEstado && estadoUsuario
+        ? concursos.filter((c) => !c.estado || c.estado === estadoUsuario)
+        : concursos,
+    [concursos, somenteMeuEstado, estadoUsuario]
+  );
+
+  const [concursoId, setConcursoId] = useState<string>(concursosFiltrados[0]?.id ?? NOVO);
   const [novoNome, setNovoNome] = useState("");
+  const [novoEstado, setNovoEstado] = useState(estadoUsuario ?? "");
   const [nivel, setNivel] = useState<"fundamental" | "medio" | "superior">("superior");
   const [horasPorDia, setHorasPorDia] = useState(2);
   const [dataProva, setDataProva] = useState("");
@@ -55,6 +67,7 @@ export function OnboardingForm({ concursos }: { concursos: Concurso[] }) {
         .insert({
           nome: novoNome.trim(),
           nivel,
+          estado: novoEstado || null,
           status: "previsto",
           created_by: user.id,
         })
@@ -106,9 +119,23 @@ export function OnboardingForm({ concursos }: { concursos: Concurso[] }) {
   return (
     <form onSubmit={enviar} className="flex flex-col gap-5">
       <div>
-        <Label>Qual concurso você pretende fazer?</Label>
+        <div className="flex items-center justify-between">
+          <Label>Qual concurso você pretende fazer?</Label>
+          {estadoUsuario && (
+            <button
+              type="button"
+              onClick={() => {
+                setSomenteMeuEstado((v) => !v);
+                setConcursoId(NOVO); // evita ficar com um id que sumiu da lista ao trocar o filtro
+              }}
+              className={cn("text-xs font-medium underline-offset-2 hover:underline", "text-brand-700")}
+            >
+              {somenteMeuEstado ? "Ver concursos de todos os estados" : `Ver só ${nomeEstado(estadoUsuario)} + Nacionais`}
+            </button>
+          )}
+        </div>
         <Select value={concursoId} onChange={(e) => setConcursoId(e.target.value)}>
-          {concursos.map((c) => (
+          {concursosFiltrados.map((c) => (
             <option key={c.id} value={c.id}>
               {c.nome} {c.orgao ? `· ${c.orgao}` : ""} · {c.estado ? c.estado : "Nacional"}
             </option>
@@ -134,6 +161,17 @@ export function OnboardingForm({ concursos }: { concursos: Concurso[] }) {
               <option value="fundamental">Fundamental</option>
               <option value="medio">Médio</option>
               <option value="superior">Superior</option>
+            </Select>
+          </div>
+          <div>
+            <Label>Estado (deixe em branco se for nacional)</Label>
+            <Select value={novoEstado} onChange={(e) => setNovoEstado(e.target.value)}>
+              <option value="">Nacional</option>
+              {ESTADOS.map((e) => (
+                <option key={e.uf} value={e.uf}>
+                  {e.nome}
+                </option>
+              ))}
             </Select>
           </div>
         </div>

@@ -7,29 +7,59 @@
 
 do $$
 declare
-  v_concurso_id uuid := '13f3d503-679a-4891-9715-bbda58e08950';
-  v_materia_pt uuid := '18a0fbbf-4cee-4688-b190-d79a6d55b6c9';
-  v_materia_rlm uuid := '36c6043a-e856-43f4-b9b0-b3ba0031b970';
-  v_materia_direito uuid := '55819def-40ae-4772-955f-151a9f0832fb';
+  -- Busca os IDs por nome (como o 0002_seed.sql já faz) em vez de UUIDs fixos:
+  -- UUIDs fixos só funcionam no banco onde foram copiados: num banco novo
+  -- (supabase db reset, CI, clone de outro dev) o 0002_seed.sql gera UUIDs
+  -- novos via gen_random_uuid(), e valores hardcoded quebrariam as FKs abaixo.
+  v_concurso_id uuid;
+  v_materia_pt uuid;
+  v_materia_rlm uuid;
+  v_materia_direito uuid;
 
-  v_top_interpretacao uuid := 'b0996db3-5954-4791-946f-2e10d438fbd2';
-  v_top_ortografia uuid := '6f2fa1cd-8267-4213-920f-63a2322ba2f4';
-  v_top_crase uuid := '742f6a12-aeaa-443e-b266-6c5e614c1668';
-  v_top_concordancia uuid := '82cc100f-8177-4039-8d09-1ecf4d656632';
+  v_top_interpretacao uuid;
+  v_top_ortografia uuid;
+  v_top_crase uuid;
+  v_top_concordancia uuid;
 
-  v_top_proposicoes uuid := '4cc06731-dbe7-43fc-9a65-b5e0a14c1f8b';
-  v_top_porcentagem uuid := 'd934399f-75d4-45b2-b488-880b61403139';
-  v_top_combinatoria uuid := '0ed524ad-587c-4a8c-9b05-d09764b7377b';
+  v_top_proposicoes uuid;
+  v_top_porcentagem uuid;
+  v_top_combinatoria uuid;
 
-  v_top_principios uuid := '9349b108-7d4b-4cc2-a1f9-43828c006171';
-  v_top_atos uuid := '5a117b97-b725-48b7-b358-50ad19e31966';
-  v_top_licitacoes uuid := '0350ef12-8c01-4009-8a0f-5214e66627a4';
+  v_top_principios uuid;
+  v_top_atos uuid;
+  v_top_licitacoes uuid;
 
   v_q uuid;
 begin
-  if exists (select 1 from public.questoes where enunciado like 'Embora tenha estudado bastante%') then
+  select id into v_concurso_id from public.concursos where nome = 'Concurso Modelo - Analista Administrativo';
+
+  -- Se o concurso de demonstração não existir (ex: 0002_seed.sql ainda não rodou
+  -- ou foi alterado), não há onde pendurar essas questões — encerra sem erro.
+  if v_concurso_id is null then
     return;
   end if;
+
+  -- Idempotência: se já tem 30+ questões neste concurso, o lote já foi aplicado.
+  if (select count(*) from public.questoes where concurso_id = v_concurso_id) >= 30 then
+    return;
+  end if;
+
+  select id into v_materia_pt from public.materias where concurso_id = v_concurso_id and nome = 'Língua Portuguesa';
+  select id into v_materia_rlm from public.materias where concurso_id = v_concurso_id and nome = 'Raciocínio Lógico-Matemático';
+  select id into v_materia_direito from public.materias where concurso_id = v_concurso_id and nome = 'Direito Administrativo';
+
+  select id into v_top_interpretacao from public.topicos where materia_id = v_materia_pt and nome = 'Interpretação de texto';
+  select id into v_top_ortografia from public.topicos where materia_id = v_materia_pt and nome = 'Ortografia e acentuação';
+  select id into v_top_crase from public.topicos where materia_id = v_materia_pt and nome = 'Crase';
+  select id into v_top_concordancia from public.topicos where materia_id = v_materia_pt and nome = 'Concordância verbal e nominal';
+
+  select id into v_top_proposicoes from public.topicos where materia_id = v_materia_rlm and nome = 'Proposições e conectivos lógicos';
+  select id into v_top_porcentagem from public.topicos where materia_id = v_materia_rlm and nome = 'Porcentagem e razão/proporção';
+  select id into v_top_combinatoria from public.topicos where materia_id = v_materia_rlm and nome = 'Análise combinatória';
+
+  select id into v_top_principios from public.topicos where materia_id = v_materia_direito and nome = 'Princípios da Administração Pública';
+  select id into v_top_atos from public.topicos where materia_id = v_materia_direito and nome = 'Atos administrativos';
+  select id into v_top_licitacoes from public.topicos where materia_id = v_materia_direito and nome = 'Licitações e contratos';
 
   -- ------------------------------------------------------------------------
   -- LÍNGUA PORTUGUESA — Interpretação de texto
