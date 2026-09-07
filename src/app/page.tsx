@@ -12,11 +12,12 @@ import {
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
-import { Logo, LogoBadge } from "@/components/ui/logo";
+import { Logo } from "@/components/ui/logo";
 import { HeroShimmer } from "@/components/hero-shimmer";
 import { buttonClass } from "@/components/ui/button";
 import { Reveal } from "@/components/ui/reveal";
 import { ProductShowcase } from "@/components/product-showcase";
+import { PhoneMockup } from "@/components/ui/phone-mockup";
 import { PLANOS } from "@/lib/planos";
 
 const RECURSOS = [
@@ -113,10 +114,12 @@ export default function LandingPage() {
         <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 z-0 h-[560px]">
           <HeroShimmer />
         </div>
-        <LogoBadge className="pointer-events-none absolute right-6 top-20 z-0 hidden h-28 w-28 animate-spin-slow opacity-80 lg:block xl:right-16" />
-        <div className="relative z-10 mx-auto max-w-4xl px-6 pt-16 pb-8 text-center sm:pt-24">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-brand-200 bg-brand-50 px-3.5 py-1.5 text-xs font-medium text-brand-700">
-            <Sparkles className="h-3.5 w-3.5" />
+        <div className="relative z-10 mx-auto max-w-4xl px-6 pt-6 pb-8 text-center sm:pt-10">
+          <span className="animate-badge-in inline-flex items-center gap-2 rounded-full border border-brand-200 bg-white px-4 py-2 text-xs font-semibold text-brand-700 shadow-soft">
+            <span className="relative flex h-2 w-2 shrink-0">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-400 opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-brand-600" />
+            </span>
             Feito para quem já estuda a teoria e precisa treinar de verdade
           </span>
 
@@ -149,21 +152,22 @@ export default function LandingPage() {
       </section>
 
       {/* COMO FUNCIONA */}
-      <section className="mx-auto max-w-6xl px-6 py-20 sm:py-24">
+      <section id="como-funciona" className="mx-auto max-w-6xl px-6 py-20 sm:py-24">
         <Reveal className="mx-auto max-w-2xl text-center">
-          <span className="text-xs font-semibold uppercase tracking-wide text-brand-600">Como funciona</span>
-          <h2 className="mt-2 font-display text-3xl font-semibold text-ink-900">Do zero ao dia da prova, em 4 passos</h2>
+          <h2 className="font-display text-3xl font-semibold text-ink-900">Do zero ao dia da prova, em 4 passos</h2>
           <p className="mt-3 text-ink-600">Sem planilha, sem post-it, sem perder o fio da meada.</p>
         </Reveal>
 
         <div className="mt-14 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
           {PASSOS.map((p, i) => (
             <Reveal key={p.titulo} delay={i * 90} className="relative">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-ink-900 text-brand-300">
-                <p.icone className="h-5 w-5" strokeWidth={1.9} />
+              <div className="relative inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 text-white shadow-soft">
+                <p.icone className="h-6 w-6" strokeWidth={1.9} />
+                <span className="absolute -bottom-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full bg-gold-400 font-display text-[11px] font-bold text-ink-900 shadow-soft ring-2 ring-white">
+                  {p.numero.replace(/^0/, "")}
+                </span>
               </div>
-              <span className="mt-4 block font-display text-sm font-semibold text-gold-600">{p.numero}</span>
-              <h3 className="mt-1 font-display text-lg font-semibold text-ink-900">{p.titulo}</h3>
+              <h3 className="mt-5 font-display text-lg font-semibold text-ink-900">{p.titulo}</h3>
               <p className="mt-2 text-sm leading-relaxed text-ink-600">{p.descricao}</p>
               {i < PASSOS.length - 1 && (
                 <ChevronRight className="absolute right-[-28px] top-4 hidden h-5 w-5 text-ink-300 lg:block" aria-hidden />
@@ -177,8 +181,7 @@ export default function LandingPage() {
       <section className="border-y border-ink-200 bg-ink-50/60 py-20 sm:py-24">
         <div className="mx-auto max-w-6xl px-6">
           <Reveal className="mx-auto max-w-2xl text-center">
-            <span className="text-xs font-semibold uppercase tracking-wide text-brand-600">Veja por dentro</span>
-            <h2 className="mt-2 font-display text-3xl font-semibold text-ink-900">Cada tela, feita pra um passo do seu estudo</h2>
+            <h2 className="font-display text-3xl font-semibold text-ink-900">Cada tela, feita pra um passo do seu estudo</h2>
             <p className="mt-3 text-ink-600">Clique nas abas abaixo e veja como cada função funciona na prática.</p>
           </Reveal>
 
@@ -192,8 +195,7 @@ export default function LandingPage() {
       <section className="border-y border-ink-200 bg-white py-20 sm:py-24">
         <div className="mx-auto max-w-6xl px-6">
           <Reveal className="mx-auto max-w-2xl text-center">
-            <span className="text-xs font-semibold uppercase tracking-wide text-brand-600">O que você usa todo dia</span>
-            <h2 className="mt-2 font-display text-3xl font-semibold text-ink-900">Tudo que falta entre estudar e passar</h2>
+            <h2 className="font-display text-3xl font-semibold text-ink-900">Tudo que falta entre estudar e passar</h2>
             <p className="mt-3 text-ink-600">Três ferramentas que trabalham juntas para transformar teoria em aprovação.</p>
           </Reveal>
 
@@ -219,8 +221,7 @@ export default function LandingPage() {
       <section id="planos" className="bg-ink-900 bg-grain py-20 sm:py-24">
         <div className="mx-auto max-w-6xl px-6">
           <Reveal className="mx-auto max-w-2xl text-center text-white">
-            <span className="text-xs font-semibold uppercase tracking-wide text-gold-300">Planos</span>
-            <h2 className="mt-2 font-display text-3xl font-semibold">Para todo momento da sua preparação</h2>
+            <h2 className="font-display text-3xl font-semibold">Para todo momento da sua preparação</h2>
             <p className="mt-3 text-ink-300">Comece grátis. Evolua quando fizer sentido para você — cancele quando quiser.</p>
           </Reveal>
 
@@ -270,10 +271,9 @@ export default function LandingPage() {
       </section>
 
       {/* FAQ */}
-      <section className="mx-auto max-w-3xl px-6 py-20 sm:py-24">
+      <section id="duvidas" className="mx-auto max-w-3xl px-6 py-20 sm:py-24">
         <Reveal className="text-center">
-          <span className="text-xs font-semibold uppercase tracking-wide text-brand-600">Dúvidas</span>
-          <h2 className="mt-2 font-display text-3xl font-semibold text-ink-900">Perguntas frequentes</h2>
+          <h2 className="font-display text-3xl font-semibold text-ink-900">Perguntas frequentes</h2>
         </Reveal>
 
         <Reveal delay={120} className="mt-10 divide-y divide-ink-200 rounded-2xl border border-ink-200 bg-white shadow-soft">
@@ -290,19 +290,90 @@ export default function LandingPage() {
       </section>
 
       {/* CTA FINAL */}
-      <section className="border-t border-ink-200 bg-white py-16 text-center">
-        <Reveal className="mx-auto max-w-xl px-6">
-          <h2 className="font-display text-2xl font-semibold text-ink-900">Pronto para treinar com método?</h2>
-          <p className="mt-2 text-ink-600">Crie sua conta grátis agora e monte seu cronograma em menos de 10 minutos.</p>
-          <Link href="/cadastro" className={buttonClass("primary", "lg", "mt-6")}>
-            Criar minha conta grátis
-          </Link>
+      <section className="overflow-hidden border-t border-ink-200 bg-white py-20 sm:py-24">
+        <Reveal className="mx-auto max-w-6xl px-6">
+          <div className="relative overflow-hidden rounded-3xl border border-brand-200 bg-gradient-to-br from-brand-50 via-white to-gold-50 shadow-soft-lg">
+            <div className="grid items-center gap-10 px-8 py-14 sm:px-12 lg:grid-cols-2 lg:py-0">
+              <div className="text-center lg:text-left">
+                <h2 className="font-display text-2xl font-semibold text-ink-900 sm:text-3xl">Pronto para treinar com método?</h2>
+                <p className="mx-auto mt-3 max-w-md text-ink-600 lg:mx-0">
+                  Crie sua conta grátis agora e monte seu cronograma em menos de 10 minutos.
+                </p>
+                <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row lg:justify-start">
+                  <Link href="/cadastro" className={buttonClass("primary", "lg")}>
+                    Criar minha conta grátis
+                  </Link>
+                  <Link href="#planos" className={buttonClass("outline", "lg")}>
+                    Ver planos
+                  </Link>
+                </div>
+              </div>
+
+              <div className="relative flex justify-center py-10 lg:py-16">
+                <div aria-hidden className="pointer-events-none absolute inset-0">
+                  <span className="absolute left-[15%] top-[10%] h-40 w-40 rounded-full bg-brand-300/40 blur-3xl" />
+                  <span className="absolute bottom-[8%] right-[15%] h-44 w-44 rounded-full bg-gold-300/40 blur-3xl" />
+                </div>
+                <PhoneMockup src="/screenshots/dashboard-mobile.png" alt="Painel do AprovaJá no celular" className="relative" />
+              </div>
+            </div>
+          </div>
         </Reveal>
       </section>
 
-      <footer className="py-12 text-center text-sm text-ink-400">
-        <Logo tagline className="justify-center" />
-        <p className="mt-4">© {new Date().getFullYear()} aprova já. Feito para quem estuda de verdade.</p>
+      <footer className="border-t border-ink-200 bg-ink-50/60">
+        <div className="mx-auto max-w-6xl px-6 py-14">
+          <div className="grid gap-10 sm:grid-cols-[1.4fr_1fr_1fr]">
+            <div>
+              <Logo tagline />
+              <p className="mt-4 max-w-xs text-sm leading-relaxed text-ink-500">
+                Questões, flashcards e cronograma de estudos em um único lugar — para quem treina de verdade.
+              </p>
+            </div>
+
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-ink-400">Produto</p>
+              <ul className="mt-4 flex flex-col gap-3 text-sm text-ink-600">
+                <li>
+                  <a href="#como-funciona" className="transition hover:text-brand-700">
+                    Como funciona
+                  </a>
+                </li>
+                <li>
+                  <a href="#planos" className="transition hover:text-brand-700">
+                    Planos
+                  </a>
+                </li>
+                <li>
+                  <a href="#duvidas" className="transition hover:text-brand-700">
+                    Perguntas frequentes
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wide text-ink-400">Conta</p>
+              <ul className="mt-4 flex flex-col gap-3 text-sm text-ink-600">
+                <li>
+                  <Link href="/cadastro" className="transition hover:text-brand-700">
+                    Criar conta grátis
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/login" className="transition hover:text-brand-700">
+                    Entrar
+                  </Link>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-ink-200 pt-6 text-xs text-ink-400 sm:flex-row">
+            <p>© {new Date().getFullYear()} aprova já. Feito para quem estuda de verdade.</p>
+            <p>Plataforma de estudos para concursos públicos.</p>
+          </div>
+        </div>
       </footer>
     </div>
   );

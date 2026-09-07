@@ -11,10 +11,12 @@ export default async function OnboardingPage() {
 
   if (!user) redirect("/login");
 
-  const { data: concursos } = await supabase
-    .from("concursos")
-    .select("id, nome, orgao, nivel")
-    .order("nome");
+  const [{ data: profile }, { data: concursos }] = await Promise.all([
+    supabase.from("profiles").select("estado").eq("id", user.id).maybeSingle(),
+    // O filtro por nacional/estado é feito no cliente (OnboardingForm), com um
+    // alternador "ver todos" — igual ao catálogo de concursos do dashboard.
+    supabase.from("concursos").select("id, nome, orgao, nivel, estado").order("nome"),
+  ]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background bg-grain px-4 py-10">
@@ -28,7 +30,7 @@ export default async function OnboardingPage() {
         </p>
 
         <div className="mt-6">
-          <OnboardingForm concursos={concursos ?? []} />
+          <OnboardingForm concursos={concursos ?? []} estadoUsuario={profile?.estado ?? null} />
         </div>
       </div>
     </div>

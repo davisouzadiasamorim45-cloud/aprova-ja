@@ -62,10 +62,10 @@ export function Logo({
   return (
     <span className={cn("inline-flex items-center gap-2.5", className)}>
       {mark && <LogoMark className="h-[1.5em] w-[1.5em]" />}
-      <span className="flex flex-col leading-none">
-        <span className="font-sans text-lg font-extrabold tracking-tight text-brand-700">aprova já</span>
+      <span className="flex flex-col">
+        <span className="font-sans text-lg font-extrabold leading-none tracking-tight text-brand-700">aprova já</span>
         {tagline && (
-          <span className="mt-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink-400">
+          <span className="mt-1.5 text-[10px] font-semibold uppercase leading-none tracking-[0.14em] text-ink-400">
             Plataforma de estudos para concursos
           </span>
         )}
