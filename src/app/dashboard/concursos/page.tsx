@@ -8,7 +8,10 @@ export default async function ConcursosPage() {
   } = await supabase.auth.getUser();
 
   const [{ data: concursos }, { data: minhasMetas }, { data: profile }] = await Promise.all([
-    supabase.from("concursos").select("id, nome, orgao, banca, ano, nivel, status, estado").order("created_at", { ascending: false }),
+    supabase
+      .from("concursos")
+      .select("id, nome, orgao, banca, ano, nivel, status, estado, edital_url")
+      .order("created_at", { ascending: false }),
     supabase.from("metas_concurso").select("concurso_id").eq("user_id", user!.id),
     supabase.from("profiles").select("estado").eq("id", user!.id).maybeSingle(),
   ]);

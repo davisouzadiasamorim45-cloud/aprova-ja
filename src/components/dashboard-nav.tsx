@@ -45,10 +45,10 @@ export function DashboardNav({ variant = "sidebar" }: { variant?: "sidebar" | "b
     return (
       <>
         {maisAberto && (
-          <div className="fixed inset-0 z-20 flex items-end justify-center bg-ink-950/40 md:hidden" onClick={() => setMaisAberto(false)}>
+          <div className="fixed inset-0 z-20 flex items-end justify-center bg-black/40 md:hidden" onClick={() => setMaisAberto(false)}>
             <div
               onClick={(e) => e.stopPropagation()}
-              className="w-full rounded-t-2xl border-t border-ink-200 bg-white p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-soft-lg animate-fade-up"
+              className="w-full rounded-t-2xl border-t border-ink-200 bg-surface p-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-soft-lg animate-fade-up"
             >
               <div className="flex items-center justify-between px-3 py-2">
                 <p className="text-sm font-semibold text-ink-900">Mais</p>
@@ -79,7 +79,7 @@ export function DashboardNav({ variant = "sidebar" }: { variant?: "sidebar" | "b
           </div>
         )}
 
-        <nav className="fixed inset-x-0 bottom-0 z-10 flex justify-around border-t border-ink-200 bg-white/95 py-1.5 backdrop-blur-sm md:hidden">
+        <nav className="fixed inset-x-0 bottom-0 z-10 flex justify-around border-t border-ink-200 bg-surface/95 py-1.5 backdrop-blur-sm md:hidden">
           {ITENS_BARRA_INFERIOR.map((item) => {
             const active = isActive(pathname, item.href);
             return (

@@ -2,7 +2,8 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createServiceRoleClient } from "@/lib/supabase/server";
+import { getStripe } from "@/lib/stripe/client";
 import { ESTADOS } from "@/lib/estados";
 
 export type AuthState = { error?: string } | undefined;
@@ -59,6 +60,58 @@ export async function signUpAction(_prevState: AuthState, formData: FormData): P
 
 export async function signOutAction() {
   const supabase = await createClient();
+  await supabase.auth.signOut();
+  revalidatePath("/", "layout");
+  redirect("/");
+}
+
+const PALAVRA_CONFIRMACAO = "EXCLUIR";
+const ASSINATURA_ATIVA = new Set(["active", "trialing", "past_due"]);
+
+export type ExcluirContaState = { error?: string } | undefined;
+
+/**
+ * Exclusão de conta (direito de eliminação da LGPD). Cancela a assinatura no
+ * Stripe antes de apagar — senão a cobrança continuaria rodando pra uma conta
+ * que não existe mais — e então remove o usuário do Auth. O resto (perfil,
+ * tentativas, flashcards, cronograma, assinatura) cai em cascata pelas FKs já
+ * definidas nas migrations; concursos/questões que a pessoa cadastrou ficam
+ * (são conteúdo de catálogo compartilhado), só perdem o autor.
+ */
+export async function excluirContaAction(_prevState: ExcluirContaState, formData: FormData): Promise<ExcluirContaState> {
+  const confirmacao = String(formData.get("confirmacao") || "").trim().toUpperCase();
+  if (confirmacao !== PALAVRA_CONFIRMACAO) {
+    return { error: `Digite ${PALAVRA_CONFIRMACAO} para confirmar.` };
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
+  const { data: assinatura } = await supabase
+    .from("assinaturas")
+    .select("stripe_subscription_id, status")
+    .eq("user_id", user.id)
+    .maybeSingle();
+
+  if (assinatura?.stripe_subscription_id && ASSINATURA_ATIVA.has(assinatura.status)) {
+    try {
+      await getStripe().subscriptions.cancel(assinatura.stripe_subscription_id);
+    } catch {
+      // Segue mesmo se o Stripe falhar: excluir a conta não pode ficar refém
+      // da cobrança. Uma assinatura órfã fica visível pro time no dashboard
+      // do Stripe pra cancelamento manual.
+    }
+  }
+
+  const admin = createServiceRoleClient();
+  const { error } = await admin.auth.admin.deleteUser(user.id);
+  if (error) {
+    return { error: "Não foi possível excluir sua conta agora. Tente novamente em instantes." };
+  }
+
   await supabase.auth.signOut();
   revalidatePath("/", "layout");
   redirect("/");

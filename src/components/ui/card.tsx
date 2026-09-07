@@ -1,6 +1,6 @@
 import { cn } from "@/lib/cn";
 
-const cardClass = "rounded-2xl border border-ink-200/70 bg-white shadow-soft";
+const cardClass = "rounded-2xl border border-ink-200/70 bg-surface shadow-soft";
 
 export function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
   return <div className={cn(cardClass, className)} {...props} />;
@@ -13,6 +13,6 @@ export function CardForm({ className, ...props }: React.FormHTMLAttributes<HTMLF
 
 /** Classe para links/botões que devem parecer um Card clicável (dashboard, atalhos). */
 export const cardLinkClass = cn(
-  "group rounded-2xl border border-ink-200/70 bg-white shadow-soft transition-all duration-150",
+  "group rounded-2xl border border-ink-200/70 bg-surface shadow-soft transition-all duration-150",
   "hover:-translate-y-0.5 hover:border-brand-300 hover:shadow-soft-lg"
 );

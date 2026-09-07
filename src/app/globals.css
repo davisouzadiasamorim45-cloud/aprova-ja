@@ -1,9 +1,17 @@
 @import "tailwindcss";
 
+/* dark: vira ativo tanto por [data-theme="dark"] (alternado no ThemeToggle) quanto,
+   por baixo, herda da preferência do sistema — ver o bloco @media mais abaixo, que
+   escreve as mesmas variáveis para quem não escolheu nada manualmente. */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 :root {
+  color-scheme: light;
+
   /* Fundo levemente amarelado (papel), não branco/cinza frio de template */
   --background: #faf8f4;
   --foreground: #211d17;
+  --surface: #ffffff;
 
   /* Marca: verde-floresta (aprovação/confirmação) + dourado (conquista) */
   --brand-50: #eefaf3;
@@ -45,9 +53,137 @@
   --shadow-color: 30 25% 15%;
 }
 
+/* Paleta escura — não é um espelhamento mecânico da clara: cada tom mantém o
+   mesmo PAPEL (texto principal, borda sutil, fundo de hover...) em vez de só
+   inverter os números, senão fundos "sutis" (ink-50/100) ficariam idênticos
+   ao fundo da página em vez de se destacarem dela. Repetida abaixo em
+   :root[data-theme="dark"] pra alternância manual (ThemeToggle) valer tanto
+   quanto a preferência do sistema. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --background: #16140f;
+    --foreground: #f3f1ec;
+    --surface: #1e1a14;
+
+    --brand-50: #0d1c15;
+    --brand-100: #12261d;
+    --brand-200: #163a2b;
+    --brand-300: #1c5a41;
+    --brand-400: #237a56;
+    --brand-500: #2f9c6d;
+    --brand-600: #34a874;
+    --brand-700: #5cc596;
+    --brand-800: #94dbb6;
+    --brand-900: #c3edd5;
+    --brand-950: #e3f7ea;
+
+    --gold-50: #2a2110;
+    --gold-100: #3d2f13;
+    --gold-200: #63481a;
+    --gold-300: #8c5f1c;
+    --gold-400: #b6811f;
+    --gold-500: #d18d20;
+    --gold-600: #e7a934;
+    --gold-700: #efc157;
+    --gold-800: #f5d98d;
+    --gold-900: #faedc8;
+
+    --ink-50: #1c1912;
+    --ink-100: #26221a;
+    --ink-200: #332d22;
+    --ink-300: #4a4234;
+    --ink-400: #6b6152;
+    --ink-500: #948870;
+    --ink-600: #a89b86;
+    --ink-700: #c9c1b0;
+    --ink-800: #e4dfd5;
+    --ink-900: #f3f1ec;
+    --ink-950: #fbfaf7;
+
+    --shadow-color: 0 0% 0%;
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --background: #16140f;
+  --foreground: #f3f1ec;
+  --surface: #1e1a14;
+
+  --brand-50: #0d1c15;
+  --brand-100: #12261d;
+  --brand-200: #163a2b;
+  --brand-300: #1c5a41;
+  --brand-400: #237a56;
+  --brand-500: #2f9c6d;
+  --brand-600: #34a874;
+  --brand-700: #5cc596;
+  --brand-800: #94dbb6;
+  --brand-900: #c3edd5;
+  --brand-950: #e3f7ea;
+
+  --gold-50: #2a2110;
+  --gold-100: #3d2f13;
+  --gold-200: #63481a;
+  --gold-300: #8c5f1c;
+  --gold-400: #b6811f;
+  --gold-500: #d18d20;
+  --gold-600: #e7a934;
+  --gold-700: #efc157;
+  --gold-800: #f5d98d;
+  --gold-900: #faedc8;
+
+  --ink-50: #1c1912;
+  --ink-100: #26221a;
+  --ink-200: #332d22;
+  --ink-300: #4a4234;
+  --ink-400: #6b6152;
+  --ink-500: #948870;
+  --ink-600: #a89b86;
+  --ink-700: #c9c1b0;
+  --ink-800: #e4dfd5;
+  --ink-900: #f3f1ec;
+  --ink-950: #fbfaf7;
+
+  --shadow-color: 0 0% 0%;
+}
+
+/* Sépia: terceira opção de tema, um "papel envelhecido" mais aconchegante
+   para leitura longa. Mantém a marca (verde/dourado) igual à do tema claro —
+   só a base neutra (fundo, superfície, tons de tinta) fica mais quente e
+   saturada. Precisa vir DEPOIS do bloco @media (prefers-color-scheme: dark)
+   no arquivo: como aquele bloco reage a qualquer tema que não seja "light"
+   (para herdar o escuro do sistema), sem essa ordem um sistema em modo
+   escuro sobrescreveria o sépia escolhido manualmente. */
+:root[data-theme="sepia"] {
+  color-scheme: light;
+
+  --background: #f2e8d2;
+  --foreground: #2e2416;
+  --surface: #faf3e3;
+
+  --ink-50: #f7f0dd;
+  --ink-100: #efe1c4;
+  --ink-200: #e0cda0;
+  --ink-300: #cab077;
+  --ink-400: #a2854f;
+  --ink-500: #816836;
+  --ink-600: #67532a;
+  --ink-700: #4f4022;
+  --ink-800: #3a2f1c;
+  --ink-900: #2e2416;
+  --ink-950: #1c160d;
+
+  --shadow-color: 35 45% 14%;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
 
   --color-brand-50: var(--brand-50);
   --color-brand-100: var(--brand-100);
@@ -189,5 +325,70 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .animate-badge-in {
     animation: none;
+  }
+}
+
+/* Toasts: entrada curta vindo de cima (onde a pilha fica) e uma barrinha que
+   escoa junto com o tempo de vida do aviso — a duração vem inline, por toast. */
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.animate-toast-in {
+  animation: toast-in 0.28s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes toast-timer {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+.animate-toast-timer {
+  transform-origin: left;
+  animation-name: toast-timer;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-toast-in {
+    animation: none;
+  }
+}
+
+/* Flashcard virando em 3D. As duas faces ficam na MESMA célula de grid, então
+   o cartão cresce conforme a face mais alta (enunciados de questão são longos)
+   em vez de depender de uma altura fixa como aconteceria com position:absolute. */
+.cartao-3d {
+  perspective: 1400px;
+}
+.cartao-faces {
+  display: grid;
+  transform-style: preserve-3d;
+  transition: transform 0.55s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.cartao-faces.esta-virado {
+  transform: rotateY(180deg);
+}
+.cartao-face {
+  grid-area: 1 / 1;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.cartao-face-verso {
+  transform: rotateY(180deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .cartao-faces {
+    transition: none;
   }
 }

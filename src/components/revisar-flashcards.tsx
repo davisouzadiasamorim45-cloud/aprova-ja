@@ -17,10 +17,14 @@ type Flashcard = {
 };
 
 const OPCOES = [
-  { qualidade: 1, label: "Errei", classe: "bg-red-50 text-red-700 hover:bg-red-100" },
+  { qualidade: 1, label: "Errei", classe: "bg-red-50 text-red-700 hover:bg-red-100 dark:bg-red-950 dark:text-red-300 dark:hover:bg-red-900" },
   { qualidade: 3, label: "Difícil", classe: "bg-gold-100 text-gold-800 hover:bg-gold-200" },
   { qualidade: 4, label: "Bom", classe: "bg-brand-100 text-brand-800 hover:bg-brand-200" },
-  { qualidade: 5, label: "Fácil", classe: "bg-emerald-100 text-emerald-800 hover:bg-emerald-200" },
+  {
+    qualidade: 5,
+    label: "Fácil",
+    classe: "bg-emerald-100 text-emerald-800 hover:bg-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:hover:bg-emerald-900",
+  },
 ];
 
 export function RevisarFlashcards({ cardsIniciais }: { cardsIniciais: Flashcard[] }) {
@@ -93,15 +97,34 @@ export function RevisarFlashcards({ cardsIniciais }: { cardsIniciais: Flashcard[
 
       <button
         onClick={() => setVirado((v) => !v)}
-        className={cn(
-          "flex min-h-[240px] w-full flex-col items-center justify-center rounded-2xl border p-8 text-center transition-all duration-200",
-          "shadow-soft hover:shadow-soft-lg",
-          virado ? "border-brand-300 bg-brand-50/50" : "border-ink-200 bg-white"
-        )}
+        aria-label={virado ? "Ver a pergunta" : "Virar o cartão e ver a resposta"}
+        aria-pressed={virado}
+        className="cartao-3d block w-full text-left"
       >
-        {!virado && <span className="mb-3 text-[11px] font-medium uppercase tracking-wide text-ink-400">Pergunta</span>}
-        <p className="font-display text-xl text-ink-900">{virado ? cardAtual.verso : cardAtual.frente}</p>
-        {!virado && <p className="mt-5 text-xs text-ink-400">Toque para virar o cartão</p>}
+        <div className={cn("cartao-faces", virado && "esta-virado")}>
+          <div
+            aria-hidden={virado}
+            className={cn(
+              "cartao-face flex min-h-[240px] flex-col items-center justify-center rounded-2xl border border-ink-200 bg-surface p-8 text-center",
+              "shadow-soft"
+            )}
+          >
+            <span className="mb-3 text-[11px] font-medium uppercase tracking-wide text-ink-400">Pergunta</span>
+            <p className="whitespace-pre-line font-display text-xl text-ink-900">{cardAtual.frente}</p>
+            <p className="mt-5 text-xs text-ink-400">Toque para virar o cartão</p>
+          </div>
+
+          <div
+            aria-hidden={!virado}
+            className={cn(
+              "cartao-face cartao-face-verso flex min-h-[240px] flex-col items-center justify-center rounded-2xl border border-brand-300 bg-brand-50/50 p-8 text-center",
+              "shadow-soft"
+            )}
+          >
+            <span className="mb-3 text-[11px] font-medium uppercase tracking-wide text-brand-700">Resposta</span>
+            <p className="whitespace-pre-line font-display text-xl text-ink-900">{cardAtual.verso}</p>
+          </div>
+        </div>
       </button>
 
       {virado ? (

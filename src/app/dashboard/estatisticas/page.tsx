@@ -1,6 +1,8 @@
 import { BarChart3, CheckCircle2, ListChecks, Target } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Card } from "@/components/ui/card";
+import { GraficoDias } from "@/components/grafico-dias";
+import { diaLocal, ultimosDias } from "@/lib/dias";
 
 type TentativaRow = {
   id: string;
@@ -11,12 +13,6 @@ type TentativaRow = {
     materias: { nome: string } | null;
   } | null;
 };
-
-function formatarData(iso: string) {
-  // "iso" é uma data pura (YYYY-MM-DD); acrescentar hora local evita que o
-  // JS interprete como meia-noite UTC e "volte" um dia em fusos negativos (ex: Brasília).
-  return new Date(iso + "T00:00:00").toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" });
-}
 
 export default async function EstatisticasPage() {
   const supabase = await createClient();
@@ -51,20 +47,18 @@ export default async function EstatisticasPage() {
 
   // últimos 14 dias
   const porDia = new Map<string, { total: number; acertos: number }>();
-  const hoje = new Date();
-  for (let i = 13; i >= 0; i--) {
-    const d = new Date(hoje);
-    d.setDate(d.getDate() - i);
-    porDia.set(d.toISOString().slice(0, 10), { total: 0, acertos: 0 });
+  for (const dia of ultimosDias(14)) {
+    porDia.set(dia, { total: 0, acertos: 0 });
   }
   for (const t of tentativas) {
-    const chave = t.created_at.slice(0, 10);
-    if (porDia.has(chave)) {
-      const atual = porDia.get(chave)!;
+    const atual = porDia.get(diaLocal(new Date(t.created_at)));
+    if (atual) {
       atual.total += 1;
       if (t.correta) atual.acertos += 1;
     }
   }
+
+  const dias = [...porDia.entries()].map(([dia, v]) => ({ dia, ...v }));
 
   return (
     <div>
@@ -93,23 +87,7 @@ export default async function EstatisticasPage() {
         <h2 className="flex items-center gap-2 font-display text-lg font-semibold text-ink-900">
           <BarChart3 className="h-4.5 w-4.5 text-ink-400" /> Últimos 14 dias
         </h2>
-        <Card className="mt-3 flex h-36 items-end gap-1.5 p-4">
-          {[...porDia.entries()].map(([dia, v]) => {
-            const altura = v.total > 0 ? Math.max(10, (v.total / Math.max(...[...porDia.values()].map((x) => x.total), 1)) * 100) : 3;
-            const taxa = v.total > 0 ? Math.round((v.acertos / v.total) * 100) : 0;
-            return (
-              <div key={dia} className="group flex flex-1 flex-col items-center gap-1.5" title={`${v.total} questões, ${taxa}% de acerto`}>
-                <div className="flex w-full flex-1 items-end">
-                  <div
-                    className={`w-full rounded-t transition-colors ${v.total > 0 ? "bg-brand-500 group-hover:bg-brand-600" : "bg-ink-100"}`}
-                    style={{ height: `${altura}%` }}
-                  />
-                </div>
-                <span className="text-[9px] text-ink-400">{formatarData(dia)}</span>
-              </div>
-            );
-          })}
-        </Card>
+        <GraficoDias dias={dias} />
       </div>
 
       <div className="mt-8">

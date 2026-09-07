@@ -6,8 +6,8 @@ const TONE_CLASSES: Record<Tone, string> = {
   neutral: "bg-ink-100 text-ink-600",
   brand: "bg-brand-50 text-brand-700",
   gold: "bg-gold-100 text-gold-800",
-  success: "bg-emerald-50 text-emerald-700",
-  danger: "bg-red-50 text-red-700",
+  success: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300",
+  danger: "bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-300",
 };
 
 export function Badge({

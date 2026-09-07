@@ -20,7 +20,7 @@ export default async function OnboardingPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background bg-grain px-4 py-10">
-      <div className="w-full max-w-lg animate-fade-up rounded-2xl border border-ink-200/70 bg-white p-8 shadow-soft-lg">
+      <div className="w-full max-w-lg animate-fade-up rounded-2xl border border-ink-200/70 bg-surface p-8 shadow-soft-lg">
         <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
           <Compass className="h-5 w-5" strokeWidth={1.9} />
         </div>

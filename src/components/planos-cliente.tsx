@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { AlertCircle, Check, Sparkles } from "lucide-react";
+import { Check, Sparkles } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { Button, buttonClass } from "@/components/ui/button";
+import { toast } from "@/components/ui/toast";
 import type { PLANOS } from "@/lib/planos";
 
 type Plano = (typeof PLANOS)[number];
@@ -18,10 +19,8 @@ export function PlanosCliente({
   temAssinatura: boolean;
 }) {
   const [carregando, setCarregando] = useState<string | null>(null);
-  const [erro, setErro] = useState<string | null>(null);
 
   async function assinar(planoId: "pro" | "premium") {
-    setErro(null);
     setCarregando(planoId);
     try {
       const res = await fetch("/api/stripe/checkout", {
@@ -34,17 +33,16 @@ export function PlanosCliente({
         // eslint-disable-next-line react-hooks/immutability -- navegação de página inteira para o Stripe, fora do ciclo de render do React
         window.location.href = data.url;
       } else {
-        setErro(data.error ?? "Não foi possível iniciar o checkout.");
+        toast.erro(data.error ?? "Não foi possível iniciar o checkout.");
       }
     } catch {
-      setErro("Erro de conexão ao iniciar o checkout.");
+      toast.erro("Erro de conexão", { descricao: "Não deu para falar com o servidor de pagamento. Tente de novo." });
     } finally {
       setCarregando(null);
     }
   }
 
   async function gerenciarAssinatura() {
-    setErro(null);
     setCarregando("portal");
     try {
       const res = await fetch("/api/stripe/portal", { method: "POST" });
@@ -52,10 +50,10 @@ export function PlanosCliente({
       if (data.url) {
         window.location.href = data.url;
       } else {
-        setErro(data.error ?? "Não foi possível abrir o portal de cobrança.");
+        toast.erro(data.error ?? "Não foi possível abrir o portal de cobrança.");
       }
     } catch {
-      setErro("Erro de conexão ao abrir o portal.");
+      toast.erro("Erro de conexão", { descricao: "Não deu para abrir o portal de cobrança. Tente de novo." });
     } finally {
       setCarregando(null);
     }
@@ -63,12 +61,6 @@ export function PlanosCliente({
 
   return (
     <div>
-      {erro && (
-        <p className="mt-4 flex items-center gap-2 rounded-xl bg-red-50 px-3.5 py-2.5 text-sm text-red-700">
-          <AlertCircle className="h-4 w-4 shrink-0" /> {erro}
-        </p>
-      )}
-
       <div className="mt-6 grid gap-5 md:grid-cols-3">
         {planos.map((p) => {
           const ativo = planoAtual === p.id;
@@ -76,7 +68,7 @@ export function PlanosCliente({
             <div
               key={p.id}
               className={cn(
-                "relative flex flex-col rounded-2xl border bg-white p-6 transition-shadow",
+                "relative flex flex-col rounded-2xl border bg-surface p-6 transition-shadow",
                 p.recomendado ? "border-brand-400 shadow-soft-lg" : "border-ink-200 shadow-soft",
                 ativo && "ring-2 ring-brand-300"
               )}

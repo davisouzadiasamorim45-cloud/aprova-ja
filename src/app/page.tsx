@@ -15,6 +15,7 @@ import {
 import { Logo } from "@/components/ui/logo";
 import { HeroShimmer } from "@/components/hero-shimmer";
 import { buttonClass } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { Reveal } from "@/components/ui/reveal";
 import { ProductShowcase } from "@/components/product-showcase";
 import { PhoneMockup } from "@/components/ui/phone-mockup";
@@ -99,7 +100,8 @@ export default function LandingPage() {
     <div className="min-h-screen bg-background">
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
         <Logo />
-        <nav className="flex items-center gap-2 sm:gap-4">
+        <nav className="flex items-center gap-1 sm:gap-2">
+          <ThemeToggle />
           <Link href="/login" className="rounded-lg px-3 py-2 text-sm font-medium text-ink-600 transition hover:text-ink-900">
             Entrar
           </Link>
@@ -115,7 +117,7 @@ export default function LandingPage() {
           <HeroShimmer />
         </div>
         <div className="relative z-10 mx-auto max-w-4xl px-6 pt-6 pb-8 text-center sm:pt-10">
-          <span className="animate-badge-in inline-flex items-center gap-2 rounded-full border border-brand-200 bg-white px-4 py-2 text-xs font-semibold text-brand-700 shadow-soft">
+          <span className="animate-badge-in inline-flex items-center gap-2 rounded-full border border-brand-200 bg-surface px-4 py-2 text-xs font-semibold text-brand-700 shadow-soft">
             <span className="relative flex h-2 w-2 shrink-0">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand-400 opacity-75" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-brand-600" />
@@ -192,7 +194,7 @@ export default function LandingPage() {
       </section>
 
       {/* RECURSOS */}
-      <section className="border-y border-ink-200 bg-white py-20 sm:py-24">
+      <section className="border-y border-ink-200 bg-surface py-20 sm:py-24">
         <div className="mx-auto max-w-6xl px-6">
           <Reveal className="mx-auto max-w-2xl text-center">
             <h2 className="font-display text-3xl font-semibold text-ink-900">Tudo que falta entre estudar e passar</h2>
@@ -204,7 +206,7 @@ export default function LandingPage() {
               <Reveal
                 key={r.titulo}
                 delay={i * 100}
-                className="rounded-2xl border border-ink-200/70 bg-white p-7 shadow-soft transition-transform duration-150 hover:-translate-y-1"
+                className="rounded-2xl border border-ink-200/70 bg-surface p-7 shadow-soft transition-transform duration-150 hover:-translate-y-1"
               >
                 <div className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
                   <r.icone className="h-5 w-5" strokeWidth={2} />
@@ -217,12 +219,14 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* PLANOS */}
-      <section id="planos" className="bg-ink-900 bg-grain py-20 sm:py-24">
+      {/* PLANOS — faixa propositalmente escura pra dar ritmo visual à página, em
+          qualquer tema; por isso usa stone (neutro fixo do Tailwind) em vez de
+          ink (que se inverte no escuro e faria essa faixa virar clara). */}
+      <section id="planos" className="bg-stone-900 bg-grain py-20 sm:py-24">
         <div className="mx-auto max-w-6xl px-6">
           <Reveal className="mx-auto max-w-2xl text-center text-white">
             <h2 className="font-display text-3xl font-semibold">Para todo momento da sua preparação</h2>
-            <p className="mt-3 text-ink-300">Comece grátis. Evolua quando fizer sentido para você — cancele quando quiser.</p>
+            <p className="mt-3 text-stone-300">Comece grátis. Evolua quando fizer sentido para você — cancele quando quiser.</p>
           </Reveal>
 
           <div className="mt-12 grid gap-5 md:grid-cols-3">
@@ -230,7 +234,7 @@ export default function LandingPage() {
               <Reveal
                 key={p.id}
                 delay={i * 100}
-                className={`relative flex flex-col rounded-2xl border bg-white p-6 ${
+                className={`relative flex flex-col rounded-2xl border bg-surface p-6 ${
                   p.recomendado ? "border-gold-400 shadow-soft-lg md:-translate-y-2" : "border-transparent shadow-soft"
                 }`}
               >
@@ -276,7 +280,7 @@ export default function LandingPage() {
           <h2 className="font-display text-3xl font-semibold text-ink-900">Perguntas frequentes</h2>
         </Reveal>
 
-        <Reveal delay={120} className="mt-10 divide-y divide-ink-200 rounded-2xl border border-ink-200 bg-white shadow-soft">
+        <Reveal delay={120} className="mt-10 divide-y divide-ink-200 rounded-2xl border border-ink-200 bg-surface shadow-soft">
           {PERGUNTAS.map((f) => (
             <details key={f.pergunta} className="group px-6 py-5 open:bg-brand-50/30">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-medium text-ink-900">
@@ -290,7 +294,7 @@ export default function LandingPage() {
       </section>
 
       {/* CTA FINAL */}
-      <section className="overflow-hidden border-t border-ink-200 bg-white py-20 sm:py-24">
+      <section className="overflow-hidden border-t border-ink-200 bg-surface py-20 sm:py-24">
         <Reveal className="mx-auto max-w-6xl px-6">
           <div className="relative overflow-hidden rounded-3xl border border-brand-200 bg-gradient-to-br from-brand-50 via-white to-gold-50 shadow-soft-lg">
             <div className="grid items-center gap-10 px-8 py-14 sm:px-12 lg:grid-cols-2 lg:py-0">

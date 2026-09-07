@@ -1,11 +1,11 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect } from "react";
 import Link from "next/link";
-import { AlertCircle } from "lucide-react";
 import type { AuthState } from "@/lib/auth/actions";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Select } from "@/components/ui/field";
+import { toast } from "@/components/ui/toast";
 import { ESTADOS } from "@/lib/estados";
 
 type Props = {
@@ -16,6 +16,12 @@ type Props = {
 export function AuthForm({ mode, action }: Props) {
   const [state, formAction, pending] = useActionState(action, undefined);
   const isLogin = mode === "login";
+
+  // A action devolve um objeto novo a cada envio, então o mesmo erro repetido
+  // (senha errada duas vezes seguidas) volta a aparecer.
+  useEffect(() => {
+    if (state?.error) toast.erro(state.error);
+  }, [state]);
 
   return (
     <div>
@@ -67,13 +73,6 @@ export function AuthForm({ mode, action }: Props) {
             </Select>
             <p className="mt-1.5 text-xs text-ink-400">Usamos isso pra te mostrar concursos estaduais do seu estado, além dos nacionais.</p>
           </div>
-        )}
-
-        {state?.error && (
-          <p className="flex items-start gap-2 rounded-xl bg-red-50 px-3.5 py-2.5 text-sm text-red-700">
-            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
-            {state.error}
-          </p>
         )}
 
         <Button type="submit" disabled={pending} className="mt-1">
