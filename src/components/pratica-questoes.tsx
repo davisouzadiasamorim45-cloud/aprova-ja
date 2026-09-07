@@ -255,7 +255,7 @@ export function PraticaQuestoes({ concursos }: { concursos: Concurso[] }) {
                   showCorrect
                     ? "border-brand-500 bg-brand-50"
                     : showWrong
-                      ? "border-red-400 bg-red-50"
+                      ? "border-red-400 bg-red-50 dark:bg-red-950"
                       : isSelected
                         ? "border-brand-400 bg-brand-50"
                         : "border-ink-200 hover:border-brand-300 hover:bg-ink-50",

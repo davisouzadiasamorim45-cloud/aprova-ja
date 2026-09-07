@@ -9,7 +9,7 @@ import { cn } from "@/lib/cn";
  */
 export function LogoMark({ className, tone = "brand" }: { className?: string; tone?: "brand" | "onDark" }) {
   const cor = tone === "onDark" ? "#ffffff" : "var(--brand-600)";
-  const negativo = tone === "onDark" ? "var(--brand-600)" : "#faf8f4";
+  const negativo = tone === "onDark" ? "var(--brand-600)" : "var(--background)";
 
   return (
     <svg viewBox="0 0 100 100" fill="none" aria-hidden className={cn("shrink-0", className)}>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { CheckCircle2, Landmark, Plus } from "lucide-react";
+import { CheckCircle2, FileText, Landmark, Plus } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/cn";
 import { Card, CardForm } from "@/components/ui/card";
@@ -19,6 +19,7 @@ type Concurso = {
   nivel: string | null;
   status: string;
   estado?: string | null;
+  edital_url?: string | null;
 };
 
 const STATUS_LABEL: Record<string, string> = {
@@ -44,6 +45,7 @@ export function CatalogoConcursos({
   const [orgao, setOrgao] = useState("");
   const [banca, setBanca] = useState("");
   const [estado, setEstado] = useState("");
+  const [editalUrl, setEditalUrl] = useState("");
   const [salvando, setSalvando] = useState(false);
   const [somenteMeuEstado, setSomenteMeuEstado] = useState(Boolean(estadoUsuario));
 
@@ -86,6 +88,7 @@ export function CatalogoConcursos({
       orgao: orgao.trim() || null,
       banca: banca.trim() || null,
       estado: estado || null,
+      edital_url: editalUrl.trim() || null,
       status: "previsto",
       created_by: user.id,
     });
@@ -95,6 +98,7 @@ export function CatalogoConcursos({
       setOrgao("");
       setBanca("");
       setEstado("");
+      setEditalUrl("");
       setMostrarForm(false);
       window.location.reload();
     }
@@ -109,7 +113,7 @@ export function CatalogoConcursos({
         </button>
 
         {estadoUsuario && (
-          <div className="inline-flex rounded-full border border-ink-200 bg-white p-1 text-sm">
+          <div className="inline-flex rounded-full border border-ink-200 bg-surface p-1 text-sm">
             <button
               onClick={() => setSomenteMeuEstado(true)}
               className={cn(
@@ -145,6 +149,13 @@ export function CatalogoConcursos({
               </option>
             ))}
           </Select>
+          <Input
+            type="url"
+            value={editalUrl}
+            onChange={(e) => setEditalUrl(e.target.value)}
+            placeholder="Link do edital (opcional)"
+            className="sm:col-span-3"
+          />
           <Button type="submit" disabled={salvando} className="sm:col-span-3">
             Salvar
           </Button>
@@ -171,22 +182,35 @@ export function CatalogoConcursos({
                   <Badge tone={c.estado ? "gold" : "brand"}>{c.estado ?? "Nacional"}</Badge>
                 </div>
               </div>
-              <button
-                onClick={() => seguir(c.id)}
-                disabled={jaSegue}
-                className={cn(
-                  "mt-4 w-full rounded-xl px-4 py-2 text-sm font-semibold transition-colors",
-                  jaSegue ? "flex items-center justify-center gap-1.5 bg-brand-50 text-brand-700" : "bg-brand-600 text-white hover:bg-brand-700"
+              <div className="mt-4 flex gap-2">
+                <button
+                  onClick={() => seguir(c.id)}
+                  disabled={jaSegue}
+                  className={cn(
+                    "flex-1 rounded-xl px-4 py-2 text-sm font-semibold transition-colors",
+                    jaSegue ? "flex items-center justify-center gap-1.5 bg-brand-50 text-brand-700" : "bg-brand-600 text-white hover:bg-brand-700"
+                  )}
+                >
+                  {jaSegue ? (
+                    <>
+                      <CheckCircle2 className="h-4 w-4" /> Você está seguindo
+                    </>
+                  ) : (
+                    "Focar neste concurso"
+                  )}
+                </button>
+                {c.edital_url && (
+                  <a
+                    href={c.edital_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Abrir o edital no site oficial"
+                    className="flex shrink-0 items-center justify-center gap-1.5 rounded-xl border border-ink-300 px-3.5 py-2 text-sm font-semibold text-ink-700 transition-colors hover:border-brand-400 hover:bg-brand-50 hover:text-brand-800"
+                  >
+                    <FileText className="h-4 w-4" /> Edital
+                  </a>
                 )}
-              >
-                {jaSegue ? (
-                  <>
-                    <CheckCircle2 className="h-4 w-4" /> Você está seguindo
-                  </>
-                ) : (
-                  "Focar neste concurso"
-                )}
-              </button>
+              </div>
             </Card>
           );
         })}

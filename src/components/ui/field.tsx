@@ -1,7 +1,7 @@
 import { cn } from "@/lib/cn";
 
 export const inputClass = cn(
-  "w-full rounded-xl border border-ink-300 bg-white px-3.5 py-2.5 text-sm text-ink-900 placeholder:text-ink-400",
+  "w-full rounded-xl border border-ink-300 bg-surface px-3.5 py-2.5 text-sm text-ink-900 placeholder:text-ink-400",
   "outline-none transition-colors focus:border-brand-500 focus:ring-4 focus:ring-brand-100",
   "disabled:bg-ink-50 disabled:text-ink-400"
 );

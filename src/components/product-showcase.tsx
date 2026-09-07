@@ -70,7 +70,7 @@ export function ProductShowcase() {
                 "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors",
                 ativo
                   ? "border-brand-600 bg-brand-600 text-white"
-                  : "border-ink-200 bg-white text-ink-600 hover:border-brand-300 hover:text-brand-700"
+                  : "border-ink-200 bg-surface text-ink-600 hover:border-brand-300 hover:text-brand-700"
               )}
             >
               <t.icon className="h-4 w-4" strokeWidth={2} />
@@ -85,7 +85,7 @@ export function ProductShowcase() {
         <p className="mt-2 text-sm leading-relaxed text-ink-600 sm:text-base">{tela.descricao}</p>
       </div>
 
-      <div className="mx-auto mt-8 max-w-4xl overflow-hidden rounded-2xl border border-ink-200 bg-white shadow-soft-lg">
+      <div className="mx-auto mt-8 max-w-4xl overflow-hidden rounded-2xl border border-ink-200 bg-surface shadow-soft-lg">
         <div className="flex items-center gap-1.5 border-b border-ink-100 bg-ink-50 px-4 py-3">
           <span className="h-2.5 w-2.5 rounded-full bg-ink-300" />
           <span className="h-2.5 w-2.5 rounded-full bg-ink-300" />

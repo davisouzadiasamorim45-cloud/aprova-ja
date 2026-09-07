@@ -139,6 +139,7 @@ export type Database = {
           created_at: string
           created_by: string | null
           descricao: string | null
+          edital_url: string | null
           estado: string | null
           id: string
           nivel: string | null
@@ -152,6 +153,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           descricao?: string | null
+          edital_url?: string | null
           estado?: string | null
           id?: string
           nivel?: string | null
@@ -165,6 +167,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           descricao?: string | null
+          edital_url?: string | null
           estado?: string | null
           id?: string
           nivel?: string | null
@@ -301,6 +304,7 @@ export type Database = {
           id: string
           intervalo_dias: number
           proxima_revisao: string
+          questao_id: string | null
           repeticoes: number
           user_id: string
           verso: string
@@ -313,6 +317,7 @@ export type Database = {
           id?: string
           intervalo_dias?: number
           proxima_revisao?: string
+          questao_id?: string | null
           repeticoes?: number
           user_id: string
           verso: string
@@ -325,6 +330,7 @@ export type Database = {
           id?: string
           intervalo_dias?: number
           proxima_revisao?: string
+          questao_id?: string | null
           repeticoes?: number
           user_id?: string
           verso?: string
@@ -335,6 +341,13 @@ export type Database = {
             columns: ["baralho_id"]
             isOneToOne: false
             referencedRelation: "baralhos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "flashcards_questao_id_fkey"
+            columns: ["questao_id"]
+            isOneToOne: false
+            referencedRelation: "questoes"
             referencedColumns: ["id"]
           },
           {
@@ -652,7 +665,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      gerar_flashcards_de_erros: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
     }
     Enums: {
       [_ in never]: never
