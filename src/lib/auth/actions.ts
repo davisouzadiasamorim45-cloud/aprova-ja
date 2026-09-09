@@ -7,7 +7,7 @@ import { createClient, createServiceRoleClient } from "@/lib/supabase/server";
 import { getStripe } from "@/lib/stripe/client";
 import { ESTADOS } from "@/lib/estados";
 
-export type AuthState = { error?: string } | undefined;
+export type AuthState = { error?: string; confirmacaoPendente?: string } | undefined;
 
 export async function signInAction(_prevState: AuthState, formData: FormData): Promise<AuthState> {
   const email = String(formData.get("email") || "").trim();
@@ -21,6 +21,11 @@ export async function signInAction(_prevState: AuthState, formData: FormData): P
   const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
+    // Conta criada mas nunca confirmada: mensagem específica, senão a pessoa
+    // fica tentando a senha achando que errou.
+    if (error.code === "email_not_confirmed" || error.message.toLowerCase().includes("not confirmed")) {
+      return { confirmacaoPendente: email };
+    }
     return { error: "E-mail ou senha inválidos." };
   }
 
@@ -44,19 +49,57 @@ export async function signUpAction(_prevState: AuthState, formData: FormData): P
     return { error: "Selecione um estado válido." };
   }
 
+  const origin = (await headers()).get("origin") ?? process.env.NEXT_PUBLIC_SITE_URL;
   const supabase = await createClient();
-  const { error } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: { data: { full_name: fullName, estado } },
+    options: {
+      data: { full_name: fullName, estado },
+      emailRedirectTo: `${origin}/auth/callback?next=/onboarding`,
+    },
   });
 
   if (error) {
     return { error: error.message.includes("registered") ? "Este e-mail já está cadastrado." : "Não foi possível criar a conta." };
   }
 
+  // Com "Confirm email" ligado no Supabase, o signUp não devolve sessão: a
+  // pessoa precisa clicar no link do e-mail. Sem avisar, o redirect abaixo
+  // cairia no /login (via onboarding) e pareceria que o cadastro quebrou.
+  if (!data.session) {
+    return { confirmacaoPendente: email };
+  }
+
   revalidatePath("/", "layout");
   redirect("/onboarding");
+}
+
+export type ReenviarConfirmacaoState = { error?: string; sucesso?: boolean } | undefined;
+
+/** Reenvia o e-mail de confirmação de cadastro (link expirado ou não recebido). */
+export async function reenviarConfirmacaoAction(
+  _prevState: ReenviarConfirmacaoState,
+  formData: FormData
+): Promise<ReenviarConfirmacaoState> {
+  const email = String(formData.get("email") || "").trim();
+  if (!email) {
+    return { error: "Informe seu e-mail." };
+  }
+
+  const origin = (await headers()).get("origin") ?? process.env.NEXT_PUBLIC_SITE_URL;
+  const supabase = await createClient();
+  const { error } = await supabase.auth.resend({
+    type: "signup",
+    email,
+    options: { emailRedirectTo: `${origin}/auth/callback?next=/onboarding` },
+  });
+
+  if (error) {
+    return { error: "Não foi possível reenviar agora. Tente novamente em instantes." };
+  }
+
+  return { sucesso: true };
 }
 
 export type RecuperarSenhaState = { error?: string; sucesso?: boolean } | undefined;

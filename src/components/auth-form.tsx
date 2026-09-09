@@ -2,7 +2,9 @@
 
 import { useActionState, useEffect } from "react";
 import Link from "next/link";
+import { MailCheck } from "lucide-react";
 import type { AuthState } from "@/lib/auth/actions";
+import { reenviarConfirmacaoAction } from "@/lib/auth/actions";
 import { Button } from "@/components/ui/button";
 import { Input, Label, Select } from "@/components/ui/field";
 import { toast } from "@/components/ui/toast";
@@ -22,6 +24,10 @@ export function AuthForm({ mode, action }: Props) {
   useEffect(() => {
     if (state?.error) toast.erro(state.error);
   }, [state]);
+
+  if (state?.confirmacaoPendente) {
+    return <ConfirmacaoPendente email={state.confirmacaoPendente} />;
+  }
 
   return (
     <div>
@@ -82,6 +88,12 @@ export function AuthForm({ mode, action }: Props) {
           </div>
         )}
 
+        {!isLogin && (
+          <p className="text-xs leading-relaxed text-ink-400">
+            Você vai receber um e-mail pra confirmar a conta antes de entrar.
+          </p>
+        )}
+
         <Button type="submit" disabled={pending} className="mt-1">
           {pending ? "Aguarde..." : isLogin ? "Entrar" : "Criar conta"}
         </Button>
@@ -104,6 +116,43 @@ export function AuthForm({ mode, action }: Props) {
           )}
         </p>
       </form>
+    </div>
+  );
+}
+
+/** Mostrada depois do cadastro (ou de tentar entrar com conta não confirmada). */
+function ConfirmacaoPendente({ email }: { email: string }) {
+  const [state, formAction, pending] = useActionState(reenviarConfirmacaoAction, undefined);
+
+  useEffect(() => {
+    if (state?.error) toast.erro(state.error);
+    if (state?.sucesso) {
+      toast.sucesso("Link reenviado", { descricao: "Confira sua caixa de entrada — e o spam." });
+    }
+  }, [state]);
+
+  return (
+    <div className="text-center">
+      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-brand-700">
+        <MailCheck className="h-6 w-6" strokeWidth={1.9} />
+      </div>
+      <h1 className="mt-4 font-display text-2xl font-semibold text-ink-900">Confirme seu e-mail</h1>
+      <p className="mt-2 text-sm leading-relaxed text-ink-500">
+        Enviamos um link de confirmação para <span className="font-medium text-ink-800">{email}</span>. Clique nele
+        para ativar a conta e continuar.
+      </p>
+      <p className="mt-1.5 text-xs text-ink-400">Não esqueça de olhar a caixa de spam.</p>
+
+      <form action={formAction} className="mt-6">
+        <input type="hidden" name="email" value={email} />
+        <Button type="submit" variant="outline" disabled={pending} className="w-full justify-center">
+          {pending ? "Reenviando..." : "Reenviar e-mail"}
+        </Button>
+      </form>
+
+      <Link href="/login" className="mt-4 inline-block text-sm font-medium text-brand-700 hover:underline">
+        Voltar para o login
+      </Link>
     </div>
   );
 }
