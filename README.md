@@ -43,9 +43,13 @@ cp .env.local.example .env.local
 | `STRIPE_WEBHOOK_SECRET` | Stripe > Developers > Webhooks (ao criar o endpoint) |
 | `STRIPE_PRICE_ID_PRO` | Stripe > Product catalog (crie um produto "Pro" com preço recorrente) |
 | `STRIPE_PRICE_ID_PREMIUM` | Stripe > Product catalog (crie um produto "Premium") |
+| `ANTHROPIC_API_KEY` | [console.anthropic.com](https://console.anthropic.com/) > Settings > API Keys — usada na correção de redação com IA |
 
 O app funciona sem as variáveis do Stripe — a página `/dashboard/planos` mostra um erro
 amigável ao tentar assinar, mas todo o resto (questões, cronograma, flashcards) funciona normalmente.
+O mesmo vale pra `ANTHROPIC_API_KEY`: sem ela, `/dashboard/redacao` deixa enviar a redação
+normalmente, mas a correção fica com status "erro" e um botão "Tentar novamente" — assim que a
+chave for configurada, o mesmo texto pode ser corrigido sem reenviar nada.
 
 ## 4. Rodar localmente
 

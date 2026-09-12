@@ -22,6 +22,12 @@ export const PLANOS = [
     preco: "R$ 47",
     periodo: "/mês",
     descricao: "Para quem quer o máximo de desempenho.",
-    recursos: ["Tudo do Pro", "Relatórios avançados de desempenho", "Simulados cronometrados", "Conteúdo exclusivo por banca"],
+    recursos: [
+      "Tudo do Pro",
+      "Correção de redação com IA (digitada ou por foto)",
+      "Relatórios avançados de desempenho",
+      "Simulados cronometrados",
+      "Conteúdo exclusivo por banca",
+    ],
   },
 ];

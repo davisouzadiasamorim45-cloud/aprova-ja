@@ -5,6 +5,14 @@ const nextConfig: NextConfig = {
   // capturas de tela e não deve aparecer para quem está usando o app.
   devIndicators: false,
 
+  experimental: {
+    serverActions: {
+      // Padrão do Next é 1 MB — pequeno demais pra foto de redação enviada
+      // pra transcrição (ver transcreverImagemAction, que já limita a 10 MB).
+      bodySizeLimit: "12mb",
+    },
+  },
+
   images: {
     // Fotos de perfil ficam no Storage do Supabase (bucket "avatars"). Um
     // padrão amplo (*.supabase.co) em vez do host exato do projeto evita

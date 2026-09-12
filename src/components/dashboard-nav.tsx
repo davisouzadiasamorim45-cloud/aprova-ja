@@ -11,6 +11,7 @@ import {
   LayoutGrid,
   Layers,
   MoreHorizontal,
+  PenLine,
   Wallet,
   X,
 } from "lucide-react";
@@ -21,6 +22,7 @@ export const NAV_ITEMS = [
   { href: "/dashboard/questoes", label: "Questões", icon: LayoutGrid },
   { href: "/dashboard/cronograma", label: "Cronograma", icon: CalendarCheck2 },
   { href: "/dashboard/flashcards", label: "Flashcards", icon: Layers },
+  { href: "/dashboard/redacao", label: "Redação", icon: PenLine },
   { href: "/dashboard/estatisticas", label: "Estatísticas", icon: ChartColumn },
   { href: "/dashboard/concursos", label: "Concursos", icon: GraduationCap },
   { href: "/dashboard/planos", label: "Planos", icon: Wallet },

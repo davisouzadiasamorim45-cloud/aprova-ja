@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, CalendarClock, LayoutGrid, Layers, Target, TrendingUp } from "lucide-react";
+import { ArrowRight, CalendarClock, LayoutGrid, Layers, PenLine, Target, TrendingUp } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { Card, cardLinkClass } from "@/components/ui/card";
 import { buttonClass } from "@/components/ui/button";
@@ -133,7 +133,7 @@ export default async function DashboardPage() {
         </Card>
       </div>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2">
+      <div className="mt-8 grid gap-4 sm:grid-cols-3">
         <Link href="/dashboard/questoes" className={`${cardLinkClass} flex items-start gap-4 p-5`}>
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
             <LayoutGrid className="h-5 w-5" strokeWidth={1.9} />
@@ -150,6 +150,20 @@ export default async function DashboardPage() {
           <div>
             <p className="font-semibold text-ink-900">Criar flashcards</p>
             <p className="mt-1 text-sm text-ink-500">Fixe conceitos importantes com repetição espaçada.</p>
+          </div>
+        </Link>
+        <Link href="/dashboard/redacao" className={`${cardLinkClass} flex items-start gap-4 p-5`}>
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-700">
+            <PenLine className="h-5 w-5" strokeWidth={1.9} />
+          </div>
+          <div>
+            <p className="flex items-center gap-2 font-semibold text-ink-900">
+              Corrigir uma redação
+              <span className="rounded-full bg-gold-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-gold-800">
+                Premium
+              </span>
+            </p>
+            <p className="mt-1 text-sm text-ink-500">Feedback por competência, nos moldes de uma banca de concurso.</p>
           </div>
         </Link>
       </div>

@@ -576,6 +576,72 @@ export type Database = {
           },
         ]
       }
+      redacoes: {
+        Row: {
+          comentario_geral: string | null
+          competencias: Json | null
+          concurso_id: string | null
+          corrigida_at: string | null
+          created_at: string
+          erro: string | null
+          id: string
+          nota_final: number | null
+          pontos_a_melhorar: string[] | null
+          pontos_fortes: string[] | null
+          status: string
+          tema: string
+          texto: string
+          user_id: string
+        }
+        Insert: {
+          comentario_geral?: string | null
+          competencias?: Json | null
+          concurso_id?: string | null
+          corrigida_at?: string | null
+          created_at?: string
+          erro?: string | null
+          id?: string
+          nota_final?: number | null
+          pontos_a_melhorar?: string[] | null
+          pontos_fortes?: string[] | null
+          status?: string
+          tema: string
+          texto: string
+          user_id: string
+        }
+        Update: {
+          comentario_geral?: string | null
+          competencias?: Json | null
+          concurso_id?: string | null
+          corrigida_at?: string | null
+          created_at?: string
+          erro?: string | null
+          id?: string
+          nota_final?: number | null
+          pontos_a_melhorar?: string[] | null
+          pontos_fortes?: string[] | null
+          status?: string
+          tema?: string
+          texto?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "redacoes_concurso_id_fkey"
+            columns: ["concurso_id"]
+            isOneToOne: false
+            referencedRelation: "concursos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "redacoes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tentativas: {
         Row: {
           alternativa_id: string | null
